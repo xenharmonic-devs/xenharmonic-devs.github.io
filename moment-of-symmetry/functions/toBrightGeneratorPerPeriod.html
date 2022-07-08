@@ -1,4 +1,4 @@
-<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>makeEdoMap | moment-of-symmetry</title><meta name="description" content="Documentation for moment-of-symmetry"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>toBrightGeneratorPerPeriod | moment-of-symmetry</title><meta name="description" content="Documentation for moment-of-symmetry"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="../assets/style.css"/><link rel="stylesheet" href="../assets/highlight.css"/><script async src="../assets/search.js" id="search-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os"</script><header class="tsd-page-toolbar">
 <div class="tsd-toolbar-contents container">
 <div class="table-cell" id="tsd-search" data-base="..">
 <div class="field"><label for="tsd-search-field" class="tsd-widget search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M15.7824 13.833L12.6666 10.7177C12.5259 10.5771 12.3353 10.499 12.1353 10.499H11.6259C12.4884 9.39596 13.001 8.00859 13.001 6.49937C13.001 2.90909 10.0914 0 6.50048 0C2.90959 0 0 2.90909 0 6.49937C0 10.0896 2.90959 12.9987 6.50048 12.9987C8.00996 12.9987 9.39756 12.4863 10.5008 11.6239V12.1332C10.5008 12.3332 10.5789 12.5238 10.7195 12.6644L13.8354 15.7797C14.1292 16.0734 14.6042 16.0734 14.8948 15.7797L15.7793 14.8954C16.0731 14.6017 16.0731 14.1267 15.7824 13.833ZM6.50048 10.499C4.29094 10.499 2.50018 8.71165 2.50018 6.49937C2.50018 4.29021 4.28781 2.49976 6.50048 2.49976C8.71001 2.49976 10.5008 4.28708 10.5008 6.49937C10.5008 8.70852 8.71314 10.499 6.50048 10.499Z" fill="var(--color-text)"></path></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div>
@@ -11,25 +11,39 @@
 <div class="tsd-page-title">
 <ul class="tsd-breadcrumb">
 <li><a href="../modules.html">moment-of-symmetry</a></li>
-<li><a href="makeEdoMap.html">makeEdoMap</a></li></ul>
-<h1>Function makeEdoMap</h1></div>
+<li><a href="toBrightGeneratorPerPeriod.html">toBrightGeneratorPerPeriod</a></li></ul>
+<h1>Function toBrightGeneratorPerPeriod</h1></div>
 <section class="tsd-panel">
 <ul class="tsd-signatures tsd-kind-function">
-<li class="tsd-signature" id="makeEdoMap">make<wbr/>Edo<wbr/>Map<span class="tsd-signature-symbol">(</span>maxSize<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><a href="../types/MosScaleInfo.html" class="tsd-signature-type" data-tsd-kind="Type alias">MosScaleInfo</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li></ul>
+<li class="tsd-signature" id="toBrightGeneratorPerPeriod">to<wbr/>Bright<wbr/>Generator<wbr/>Per<wbr/>Period<span class="tsd-signature-symbol">(</span>generatorPerPeriod<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+<li class="tsd-signature" id="toBrightGeneratorPerPeriod-1">to<wbr/>Bright<wbr/>Generator<wbr/>Per<wbr/>Period<span class="tsd-signature-symbol">(</span>generatorPerPeriod<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">default</span>, size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Fraction</span></li></ul>
 <ul class="tsd-descriptions">
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Construct a mapping from EDO size to supported MOS scales.</p>
+<div class="tsd-comment tsd-typography"><p>Flip a generator / period ratio to a bright version if necessary.</p>
 
-<h3>Returns</h3><p>A mapping from EDO size to an array of information about the supported MOS scales.</p>
+<h3>Returns</h3><p>The first parameter. Flipped if it was dark.</p>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>maxSize: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 12</span></h5>
-<div class="tsd-comment tsd-typography"><p>Maximum size of the MOS patterns to include.</p>
+<h5>generatorPerPeriod: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>Generator divided by period.</p>
+</div></li>
+<li>
+<h5>size: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>Size of the scale.</p>
 </div></li></ul></div>
-<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><a href="../types/MosScaleInfo.html" class="tsd-signature-type" data-tsd-kind="Type alias">MosScaleInfo</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4></li></ul></section></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4></li>
+<li class="tsd-description">
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>generatorPerPeriod: <span class="tsd-signature-type">default</span></h5></li>
+<li>
+<h5>size: <span class="tsd-signature-type">number</span></h5></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Fraction</span></h4></li></ul></section></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
 <details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
@@ -67,7 +81,7 @@
 <li class="tsd-kind-function"><a href="getHardness.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-64-path"></use><use href="#icon-64-text"></use></svg>get<wbr/>Hardness</a></li>
 <li class="tsd-kind-function"><a href="getSemiconvergents.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-64-path"></use><use href="#icon-64-text"></use></svg>get<wbr/>Semiconvergents</a></li>
 <li class="tsd-kind-function"><a href="lcm.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-64-path"></use><use href="#icon-64-text"></use></svg>lcm</a></li>
-<li class="current tsd-kind-function"><a href="makeEdoMap.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-64-path"></use><use href="#icon-64-text"></use></svg>make<wbr/>Edo<wbr/>Map</a></li>
+<li class="tsd-kind-function"><a href="makeEdoMap.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-64-path"></use><use href="#icon-64-text"></use></svg>make<wbr/>Edo<wbr/>Map</a></li>
 <li class="tsd-kind-function"><a href="mmod.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-64-path"></use><use href="#icon-64-text"></use></svg>mmod</a></li>
 <li class="tsd-kind-function"><a href="modeInfo.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-64-path"></use><use href="#icon-64-text"></use></svg>mode<wbr/>Info</a></li>
 <li class="tsd-kind-function"><a href="modeName.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-64-path"></use><use href="#icon-64-text"></use></svg>mode<wbr/>Name</a></li>
@@ -81,7 +95,7 @@
 <li class="tsd-kind-function"><a href="parentMos.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-64-path"></use><use href="#icon-64-text"></use></svg>parent<wbr/>Mos</a></li>
 <li class="tsd-kind-function"><a href="scaleInfo.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-64-path"></use><use href="#icon-64-text"></use></svg>scale<wbr/>Info</a></li>
 <li class="tsd-kind-function"><a href="tamnamsInfo.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-64-path"></use><use href="#icon-64-text"></use></svg>tamnams<wbr/>Info</a></li>
-<li class="tsd-kind-function"><a href="toBrightGeneratorPerPeriod.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-64-path"></use><use href="#icon-64-text"></use></svg>to<wbr/>Bright<wbr/>Generator<wbr/>Per<wbr/>Period</a></li></ul></nav></div></div>
+<li class="current tsd-kind-function"><a href="toBrightGeneratorPerPeriod.html" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-64-path"></use><use href="#icon-64-text"></use></svg>to<wbr/>Bright<wbr/>Generator<wbr/>Per<wbr/>Period</a></li></ul></nav></div></div>
 <div class="container tsd-generator">
 <p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div>
 <div class="overlay"></div><script src="../assets/main.js"></script></body></html>
