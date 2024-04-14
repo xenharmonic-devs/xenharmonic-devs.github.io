@@ -1,0 +1,1640 @@
+<!DOCTYPE html><html class="default" lang="en"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>sonic-weave</title><meta name="description" content="Documentation for sonic-weave"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script defer src="assets/main.js"></script><script async src="assets/icons.js" id="tsd-icons-script"></script><script async src="assets/search.js" id="tsd-search-script"></script><script async src="assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><div class="table-cell" id="tsd-search" data-base="."><div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="assets/icons.svg#icon-search"></use></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div><div class="field"><div id="tsd-toolbar-links"></div></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">sonic-weave</a></div><div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="assets/icons.svg#icon-menu"></use></svg></a></div></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><h2>sonic-weave</h2></div><div class="tsd-panel tsd-typography"><a id="md:sonic-weave" class="tsd-anchor"></a><h1><a href="#md:sonic-weave">sonic-weave</a></h1><p>SonicWeave is a Domain Specific Language for manipulating musical frequencies, ratios and equal temperaments.</p>
+<p>Not to be confused with the Sweave flexible framework for mixing text and R code for automatic document generation.</p>
+<a id="md:type-system" class="tsd-anchor"></a><h2><a href="#md:type-system">Type system</a></h2><p>SonicWeave comes with some basic types.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Example</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>None</td>
+<td><code>niente</code></td>
+<td><em>Niente</em> is used in music notation and means <em>nothing</em> in Italian.</td>
+</tr>
+<tr>
+<td>String</td>
+<td><code>&#39;hello&#39;</code></td>
+<td>Both single and double quoted strings are supported. Used for note labels.</td>
+</tr>
+<tr>
+<td>Color</td>
+<td><code>#ff00ff</code></td>
+<td>CSS colors, short hexadecimal, and long hexadecimal colors supported. Used for note colors.</td>
+</tr>
+<tr>
+<td>Boolean</td>
+<td><code>true</code> or <code>false</code></td>
+<td>Converted to <code>1</code> or <code>0</code> in scales.</td>
+</tr>
+<tr>
+<td>Interval</td>
+<td><code>7/5</code></td>
+<td>There are many types of intervals with their own operator semantics.</td>
+</tr>
+<tr>
+<td>Array</td>
+<td><code>[5/4, P5, 9\9]</code></td>
+<td>Musical scales are represented using arrays of intervals.</td>
+</tr>
+<tr>
+<td>Record</td>
+<td><code>{fif: 3/2, &quot;p/e&quot;: 2}</code></td>
+<td>Associative data indexed by strings.</td>
+</tr>
+<tr>
+<td>Function</td>
+<td><code>riff plusOne(x) {x+1}</code></td>
+<td><em>Riff</em> is a music term for a short repeated phrase.</td>
+</tr>
+</tbody></table>
+<a id="md:basic-interval-types" class="tsd-anchor"></a><h3><a href="#md:basic-interval-types">Basic interval types</a></h3><p>You can read more about domains and echelons <a href="#md:interval-type-system">below</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Examples</th>
+<th>Domain</th>
+<th>Echelon</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Integer</td>
+<td><code>2</code>, <code>5</code></td>
+<td>Linear</td>
+<td>Relative</td>
+<td>Same as <code>2/1</code> or <code>5/1</code>.</td>
+</tr>
+<tr>
+<td>Decimal</td>
+<td><code>1,2</code>, <code>1.4e0</code></td>
+<td>Linear</td>
+<td>Relative</td>
+<td>Decimal commas only work in isolation.</td>
+</tr>
+<tr>
+<td>Fraction</td>
+<td><code>4/3</code>, <code>10/7</code></td>
+<td>Linear</td>
+<td>Relative</td>
+<td></td>
+</tr>
+<tr>
+<td>N-of-EDO</td>
+<td><code>1\5</code>, <code>7\12</code>, <code>7°12</code></td>
+<td>Logarithmic</td>
+<td>Relative</td>
+<td><code>n\m</code> means <code>n</code> steps of <code>m</code> equal divisions of the octave <code>2/1</code>.</td>
+</tr>
+<tr>
+<td>N-of-EDJI</td>
+<td><code>9\13&lt;3&gt;</code>, <code>2\5&lt;3/2&gt;</code></td>
+<td>Logarithmic</td>
+<td>Relative</td>
+<td><code>n\m&lt;p/q&gt;</code> means <code>n</code> steps of <code>m</code> equal divisions of the ratio <code>p/q</code>.</td>
+</tr>
+<tr>
+<td>Step</td>
+<td><code>7\</code>, <code>13</code>, <code>13°</code></td>
+<td>Logarithmic</td>
+<td>Relative</td>
+<td>Correspond to edo-steps after tempering is applied.</td>
+</tr>
+<tr>
+<td>Cents</td>
+<td><code>701.955</code>, <code>100c</code></td>
+<td>Logarithmic</td>
+<td>Relative</td>
+<td>One centisemitone <code>1.0</code> is equal to <code>1\1200</code>.</td>
+</tr>
+<tr>
+<td>Monzo</td>
+<td><code>[-4 4 -1&gt;</code>, <code>[1,-1/2&gt;</code></td>
+<td>Logarithmic</td>
+<td>Relative</td>
+<td>Also known as prime count vectors. Each component is an exponent of a prime number factor.</td>
+</tr>
+<tr>
+<td>FJS</td>
+<td><code>P5</code>, <code>M3^5</code></td>
+<td>Logarithmic</td>
+<td>Relative</td>
+<td><a href="https://en.xen.wiki/w/Functional_Just_System">Functional Just System</a></td>
+</tr>
+<tr>
+<td>Frequency</td>
+<td><code>440 Hz</code>, <code>2.2 kHz</code></td>
+<td>Linear</td>
+<td>Absolute</td>
+<td>Absolute frequency of oscillation.</td>
+</tr>
+<tr>
+<td>Absolute FJS</td>
+<td><code>C4</code>, <code>Eb_5</code></td>
+<td>Logarithmic</td>
+<td>Absolute</td>
+<td>Absolute version of <a href="https://en.xen.wiki/w/Functional_Just_System">FJS</a>.</td>
+</tr>
+<tr>
+<td>S-expression</td>
+<td><code>S8</code>, <code>S5..8</code></td>
+<td>Logarithmic</td>
+<td>Relative</td>
+<td>Additive spelling of <a href="https://en.xen.wiki/w/Square_superparticular">square superparticulars</a>.</td>
+</tr>
+<tr>
+<td>Val</td>
+<td><code>&lt;12, 19, 28]</code></td>
+<td>Cologarithmic</td>
+<td>Relative</td>
+<td>Used to temper scales.</td>
+</tr>
+<tr>
+<td>Warts</td>
+<td><code>12@</code>, <code>29@2.3.13/5</code></td>
+<td>Cologarithmic</td>
+<td>Relative</td>
+<td><a href="https://en.xen.wiki/w/Val#Shorthand_notation">Shorthand</a> for vals.</td>
+</tr>
+</tbody></table>
+<p>The <code>n°m</code> (n degrees of m edo) alternative exists to avoid using the backslash inside tagged template literals.</p>
+<a id="md:numeric-separators" class="tsd-anchor"></a><h4><a href="#md:numeric-separators">Numeric separators</a></h4><p>It is possible to separate numbers into groups using underscores for readability e.g. <code>1_000_000</code> is one million as an integer and <code>123_201/123_200</code> is the <a href="https://en.xen.wiki/w/Chalmersia">chalmerisia</a> as a fraction.</p>
+<a id="md:basic-operation" class="tsd-anchor"></a><h2><a href="#md:basic-operation">Basic operation</a></h2><p>SonicWeave is intended for designing musical scales so a fundamental concept is the current scale (accessible through <code>$</code>).</p>
+<a id="md:pushing" class="tsd-anchor"></a><h3><a href="#md:pushing">Pushing</a></h3><p>The current scale starts empty (<code>$ = []</code>) and the basic action is to push intervals onto the scale.</p>
+<p>Statements can be separated with semicolons <code>;</code> or newlines. After these instructions ...</p>
+<pre><code class="language-javascript"><span class="hl-0">5</span><span class="hl-1">/</span><span class="hl-0">4</span><br/><span class="hl-0">3</span><span class="hl-1">/</span><span class="hl-0">2</span><br/><span class="hl-0">2</span><span class="hl-1">/</span><span class="hl-0">1</span>
+</code><button>Copy</button></pre>
+<p>...the scale consists of <code>$ = [5/4, 3/2, 2/1]</code>.</p>
+<a id="md:unrolling" class="tsd-anchor"></a><h3><a href="#md:unrolling">Unrolling</a></h3><p>Sub-scales are automatically unrolled onto the current scale.</p>
+<pre><code class="language-javascript"><span class="hl-0">4</span><span class="hl-1">\</span><span class="hl-0">12</span><br/><span class="hl-1">[</span><span class="hl-0">7</span><span class="hl-1">\</span><span class="hl-0">12</span><span class="hl-1">, </span><span class="hl-0">12</span><span class="hl-1">\</span><span class="hl-0">12</span><span class="hl-1">]</span>
+</code><button>Copy</button></pre>
+<p>Results in the scale <code>$ = [4\12, 7\12, 12\12]</code>.</p>
+<a id="md:coloring" class="tsd-anchor"></a><h3><a href="#md:coloring">Coloring</a></h3><p>If an expression evaluates to a color it is attached to the last interval in the scale.</p>
+<pre><code class="language-javascript"><span class="hl-0">3</span><span class="hl-1">/</span><span class="hl-0">2</span><br/><span class="hl-2">green</span><br/><span class="hl-0">2</span><span class="hl-1">/</span><span class="hl-0">1</span><br/><span class="hl-2">red</span>
+</code><button>Copy</button></pre>
+<p>Results in a scale equivalent to <code>$ = [3/2 #008000, 2/1 #FF0000]</code>.</p>
+<p>It is up to a user interface to interprete colors. The original intent is to color notes in an on-screen keyboard.</p>
+<a id="md:labeling" class="tsd-anchor"></a><h3><a href="#md:labeling">Labeling</a></h3><p>If an expression evaluates to a string it is attached to the last interval in the scale.</p>
+<pre><code class="language-javascript"><span class="hl-0">4</span><span class="hl-1">/</span><span class="hl-0">3</span><br/><span class="hl-3">&quot;My P4&quot;</span><br/><span class="hl-0">2</span><span class="hl-1">/</span><span class="hl-0">1</span><br/><span class="hl-3">&#39;Unison / octave&#39;</span>
+</code><button>Copy</button></pre>
+<p>Results in the scale <code>$ = [(4/3 &quot;My P4&quot;), (2/1 &quot;Unison / octave&quot;)]</code>.</p>
+<p>Labels are included in the <code>.scl</code> export.</p>
+<p>It is up to a user interface to interprete labels. The original intent is to label notes in an on-screen keyboard.</p>
+<p>Scales are intended to repeat from the last interval in the scale (a.k.a. <em>equave</em>), so a user interface would use the label of <code>2/1</code> for <code>1/1</code> or <code>4/1</code> too.</p>
+<a id="md:operators" class="tsd-anchor"></a><h2><a href="#md:operators">Operators</a></h2><p>SonicWeave comes with some operators.</p>
+<a id="md:unary" class="tsd-anchor"></a><h3><a href="#md:unary">Unary</a></h3><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Linear</th>
+<th>Result</th>
+<th>Logarithmic</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Identity</td>
+<td><code>+2</code></td>
+<td><code>2</code></td>
+<td><code>+P8</code></td>
+<td><code>P8</code></td>
+</tr>
+<tr>
+<td>Negation</td>
+<td><code>-2</code></td>
+<td><code>-2</code></td>
+<td><em>N/A</em></td>
+<td></td>
+</tr>
+<tr>
+<td>Inversion</td>
+<td><code>%2</code></td>
+<td><code>1/2</code></td>
+<td><code>-P8</code></td>
+<td><code>P-8</code></td>
+</tr>
+<tr>
+<td>Inversion</td>
+<td><code>÷3/2</code></td>
+<td><code>2/3</code></td>
+<td><code>-P5</code></td>
+<td><code>P-5</code></td>
+</tr>
+<tr>
+<td>Geom. inverse</td>
+<td><em>N/A</em></td>
+<td></td>
+<td><code>%P8</code></td>
+<td><code>v&lt;1]</code></td>
+</tr>
+<tr>
+<td>Logical NOT</td>
+<td><code>not 2</code></td>
+<td><code>false</code></td>
+<td><code>not P8</code></td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td>Up-shimmer*</td>
+<td><code>^2</code></td>
+<td><code>2*1.0006r</code></td>
+<td><code>^P8</code></td>
+<td><code>P8 + 1\</code></td>
+</tr>
+<tr>
+<td>Down-shimmer*</td>
+<td><code>v{2}</code></td>
+<td><code>2*0.9994r</code></td>
+<td><code>vP8</code></td>
+<td><code>P8 - 1</code></td>
+</tr>
+<tr>
+<td>Lift-shimmer*</td>
+<td><code>/2</code></td>
+<td><code>2*1.0029r</code></td>
+<td><code>/P8</code></td>
+<td><code>P8 + 5\</code></td>
+</tr>
+<tr>
+<td>Drop-shimmer*</td>
+<td><code>\2</code></td>
+<td><code>2*0.9971r</code></td>
+<td><code>\P8</code></td>
+<td><code>P8 - 5</code></td>
+</tr>
+<tr>
+<td>Increment</td>
+<td><code>++i</code></td>
+<td><code>3</code></td>
+<td><em>N/A</em></td>
+<td></td>
+</tr>
+<tr>
+<td>Increment</td>
+<td><code>i++</code></td>
+<td><code>2</code></td>
+<td><em>N/A</em></td>
+<td></td>
+</tr>
+<tr>
+<td>Decrement</td>
+<td><code>--i</code></td>
+<td><code>1</code></td>
+<td><em>N/A</em></td>
+<td></td>
+</tr>
+<tr>
+<td>Decrement</td>
+<td><code>i--</code></td>
+<td><code>2</code></td>
+<td><em>N/A</em></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>*) Shimmer is meant to be used with tempering and corresponds to edo-steps unless otherwise declared.</p>
+<p>Down-shimmer sometimes requires curly brackets due to <code>v</code> colliding with the Latin alphabet.</p>
+<p>Drop <code>\</code> can be spelled <code>drop</code> to avoid using the backslash inside template literals. Lift <code>/</code> may be spelled <code>lift</code> for minor grammatical reasons.</p>
+<p>Increment/decrement assumes that you&#39;ve declared <code>let i = 2</code> originally.</p>
+<a id="md:coalescing" class="tsd-anchor"></a><h3><a href="#md:coalescing">Coalescing</a></h3><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Example</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Logical AND</td>
+<td><code>2 and 0</code></td>
+<td><code>0</code></td>
+</tr>
+<tr>
+<td>Logical OR</td>
+<td><code>0 or 2</code></td>
+<td><code>2</code></td>
+</tr>
+<tr>
+<td>Nullish coalescing</td>
+<td><code>niente ?? 2</code></td>
+<td><code>2</code></td>
+</tr>
+</tbody></table>
+<a id="md:boolean" class="tsd-anchor"></a><h3><a href="#md:boolean">Boolean</a></h3><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Operator</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Strict equality</td>
+<td><code>===</code></td>
+</tr>
+<tr>
+<td>Strict inequality</td>
+<td><code>!==</code></td>
+</tr>
+<tr>
+<td>Equality</td>
+<td><code>==</code></td>
+</tr>
+<tr>
+<td>Inequality</td>
+<td><code>!=</code></td>
+</tr>
+<tr>
+<td>Greater than</td>
+<td><code>&gt;</code></td>
+</tr>
+<tr>
+<td>Greater than or equal</td>
+<td><code>&gt;=</code></td>
+</tr>
+<tr>
+<td>Less than</td>
+<td><code>&lt;</code></td>
+</tr>
+<tr>
+<td>Less than or equal</td>
+<td><code>&lt;=</code></td>
+</tr>
+</tbody></table>
+<a id="md:array" class="tsd-anchor"></a><h3><a href="#md:array">Array</a></h3><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Operator</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Strict inclusion</td>
+<td><code>of</code></td>
+</tr>
+<tr>
+<td>Strict exclusion</td>
+<td><code>not of</code></td>
+</tr>
+<tr>
+<td>Inclusion</td>
+<td><code>~of</code></td>
+</tr>
+<tr>
+<td>Exclusion</td>
+<td><code>not ~of</code></td>
+</tr>
+<tr>
+<td>Key inclusion</td>
+<td><code>in</code></td>
+</tr>
+<tr>
+<td>Key exclusion</td>
+<td><code>not in</code></td>
+</tr>
+<tr>
+<td>Index inclusion</td>
+<td><code>~in</code></td>
+</tr>
+<tr>
+<td>Index exclusion</td>
+<td><code>not ~in</code></td>
+</tr>
+<tr>
+<td>Outer product</td>
+<td><code>tns</code></td>
+</tr>
+<tr>
+<td>Outer product</td>
+<td><code>⊗</code></td>
+</tr>
+</tbody></table>
+<p>Inclusion is similar to Python&#39;s <code>in</code> operator e.g. <code>2 of [1, 2, 3]</code> evaluates to <code>true</code>.</p>
+<p>Key inclusion is similar to JavaScript&#39;s <code>in</code> operator e.g. <code>&quot;foo&quot; in {foo: 1, bar: 2}</code> evaluates to <code>true</code>.</p>
+<p>Index inclusion allows for negative indices <code>-1 in [0]</code> evaluates to <code>false</code> while <code>-1 ~in [0]</code> evaluates to <code>true</code>.</p>
+<p>Outer product a.k.a. tensoring expands all possible products in two arrays into an array of arrays e.g. <code>[2, 3, 5] tns [7, 11]</code> evaluates to</p>
+<pre><code class="language-javascript"><span class="hl-1">[</span><br/><span class="hl-1">  [</span><span class="hl-0">14</span><span class="hl-1">, </span><span class="hl-0">22</span><span class="hl-1">],</span><br/><span class="hl-1">  [</span><span class="hl-0">21</span><span class="hl-1">, </span><span class="hl-0">33</span><span class="hl-1">],</span><br/><span class="hl-1">  [</span><span class="hl-0">35</span><span class="hl-1">, </span><span class="hl-0">55</span><span class="hl-1">]</span><br/><span class="hl-1">]</span>
+</code><button>Copy</button></pre>
+<a id="md:interval" class="tsd-anchor"></a><h3><a href="#md:interval">Interval</a></h3><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Linear</th>
+<th>Result</th>
+<th>Logarithmic</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Addition</td>
+<td><code>3 + 5</code></td>
+<td><code>8</code></td>
+<td><em>N/A</em></td>
+<td></td>
+</tr>
+<tr>
+<td>Subtraction</td>
+<td><code>5 - 3</code></td>
+<td><code>2</code></td>
+<td><em>N/A</em></td>
+<td></td>
+</tr>
+<tr>
+<td>Modulo</td>
+<td><code>5 mod 3</code></td>
+<td><code>2</code></td>
+<td><em>N/A</em></td>
+<td></td>
+</tr>
+<tr>
+<td>Ceiling modulo</td>
+<td><code>0 modc 3</code></td>
+<td><code>3</code></td>
+<td><em>N/A</em></td>
+<td></td>
+</tr>
+<tr>
+<td>Round (to multiple of)</td>
+<td><code>5 to 3</code></td>
+<td><code>6</code></td>
+<td><em>N/A</em></td>
+<td></td>
+</tr>
+<tr>
+<td>Minimum</td>
+<td><code>2 min 1</code></td>
+<td><code>1</code></td>
+<td><code>P8 min P1</code></td>
+<td><code>P1</code></td>
+</tr>
+<tr>
+<td>Maximum</td>
+<td><code>2 max 1</code></td>
+<td><code>2</code></td>
+<td><code>P8 max P1</code></td>
+<td><code>P8</code></td>
+</tr>
+<tr>
+<td>Multiplication</td>
+<td><code>2 * 3</code></td>
+<td><code>6</code></td>
+<td><code>P8 + P12</code></td>
+<td><code>P19</code></td>
+</tr>
+<tr>
+<td>Multiplication</td>
+<td><code>110 Hz × 5</code></td>
+<td><code>550 Hz</code></td>
+<td><code>A♮2 + M17^5</code></td>
+<td><code>C♯5^5</code></td>
+</tr>
+<tr>
+<td>Division</td>
+<td><code>6 % 2</code></td>
+<td><code>3</code></td>
+<td><code>P19 - P8</code></td>
+<td><code>P12</code></td>
+</tr>
+<tr>
+<td>Division</td>
+<td><code>220 hz ÷ 2</code></td>
+<td><code>110 Hz</code></td>
+<td><code>A=3 - P8</code></td>
+<td><code>A=2</code></td>
+</tr>
+<tr>
+<td>Fractions</td>
+<td><code>(1+2)/2</code></td>
+<td><code>3/2</code></td>
+<td><code>P12 - P8</code></td>
+<td><code>P5</code></td>
+</tr>
+<tr>
+<td>Reduction</td>
+<td><code>5 rd 2</code></td>
+<td><code>5/4</code></td>
+<td><code>M17^5 mod P8</code></td>
+<td><code>M3^5</code></td>
+</tr>
+<tr>
+<td>Ceiling reduction</td>
+<td><code>2 rdc 2</code></td>
+<td><code>2</code></td>
+<td><code>P8 modc P8</code></td>
+<td><code>P8</code></td>
+</tr>
+<tr>
+<td>Exponentiation</td>
+<td><code>3 ^ 2</code></td>
+<td><code>9</code></td>
+<td><code>P12 * 2</code></td>
+<td><code>M23</code></td>
+</tr>
+<tr>
+<td>Recipropower</td>
+<td><code>9 /^ 2</code></td>
+<td><code>3</code></td>
+<td><code>M23 % 2</code></td>
+<td><code>P12</code></td>
+</tr>
+<tr>
+<td>Root taking</td>
+<td><code>9 ^/ 2</code></td>
+<td><code>3</code></td>
+<td><code>M23 % 2</code></td>
+<td><code>P12</code></td>
+</tr>
+<tr>
+<td>Logarithm (in base of)</td>
+<td><code>9 /_ 3</code></td>
+<td><code>2</code></td>
+<td><code>M23 % P12</code></td>
+<td><code>2</code></td>
+</tr>
+<tr>
+<td>Round (to power of)</td>
+<td><code>5 by 2</code></td>
+<td><code>4</code></td>
+<td><code>M17^5 to P8</code></td>
+<td><code>P15</code></td>
+</tr>
+<tr>
+<td>N of EDO</td>
+<td><code>(5+2)\12</code></td>
+<td><code>7\12</code></td>
+<td><em>N/A</em></td>
+<td></td>
+</tr>
+<tr>
+<td>N of EDO</td>
+<td><code>(5+2)°12</code></td>
+<td><code>7\12</code></td>
+<td><em>N/A</em></td>
+<td></td>
+</tr>
+<tr>
+<td>NEDJI Projection</td>
+<td><code>sqrt(2) ed 3</code></td>
+<td><code>1\2&lt;3&gt;</code></td>
+<td><code>2\3 ed S3</code></td>
+<td><code>2\3&lt;9/8&gt;</code></td>
+</tr>
+<tr>
+<td>Val product</td>
+<td><code>12@ · 3/2</code></td>
+<td><code>7</code></td>
+<td><code>&lt;12 19] dot P5</code></td>
+<td><code>7</code></td>
+</tr>
+</tbody></table>
+<p>Fractions and their powers are used a lot in just intonation so <code>4/3 ^ 2/1</code> means <code>(4/3) ^ (2/1)</code> i.e. <code>16/9</code>. The other division symbols (<code>÷</code> and its ASCII counterpart <code>%</code>) have the usual precedence from mathematics: <code>4÷3^2÷1</code> means <code>4 ÷ (3^2) ÷ 1</code> i.e. <code>4/9</code>. In other words <code>/</code> binds stronger than <code>^</code> which binds stronger than <code>÷</code>.</p>
+<p>Of these NEDJI Projection is probably the most obtuse, so a few words are in order. In <code>octaves ed base</code> the <code>base</code> operand is raised to the two&#39;s exponent of <code>octaves</code>. Exponents of all other primes are discarded. The result is alway is in the logarithmic domain. e.g. <code>[7/13 1 1&gt; ed 5</code> discards the <code>1</code> components and moves/projects the first component to the third slot (corresponding to prime five) resulting in <code>[0 0 7\13&gt;</code>.</p>
+<a id="md:universal-operators-and-preference" class="tsd-anchor"></a><h4><a href="#md:universal-operators-and-preference">Universal operators and preference</a></h4><p>To ignore the domain and always operate as if the operands were linear you can use <em>universal wings</em> around the operator e.g. <code>P8 ~+~ P12</code> evaluates to <code>M17^5</code>.</p>
+<p>To prefer one format over the other you can indicate the preferred domain with a single wing e.g. <code>P8 +~ 3</code> evaluates to <code>5</code> while <code>P8 ~+ 3</code> evaluates to <code>M17^5</code>.</p>
+<a id="md:arrays" class="tsd-anchor"></a><h2><a href="#md:arrays">Arrays</a></h2><a id="md:literals" class="tsd-anchor"></a><h3><a href="#md:literals">Literals</a></h3><p>Array literals are formed by enclosing expressions inside square brackets e.g. <code>[1, 2, 1+2]</code> evaluates to <code>[1, 2, 3]</code>.</p>
+<a id="md:ranges" class="tsd-anchor"></a><h3><a href="#md:ranges">Ranges</a></h3><p>Ranges of integers are generated by giving the start and end points e.g. <code>[1..5]</code> evaluates to <code>[1, 2, 3, 4, 5]</code>.</p>
+<p>To skip over values you can specify the second element <code>[1,3..10]</code> evaluates to <code>[1, 3, 5, 7, 9]</code> (the iteration stops and rejects after reaching <code>11</code>).</p>
+<a id="md:harmonic-segments" class="tsd-anchor"></a><h3><a href="#md:harmonic-segments">Harmonic segments</a></h3><p>Segments of the (musical) harmonic series can be obtained by specifying the root and the harmonic of equivalence e.g. <code>4::8</code> evaluates to <code>[5/4, 6/4, 7/4, 8/4]</code>.</p>
+<a id="md:subharmonic-segments" class="tsd-anchor"></a><h4><a href="#md:subharmonic-segments">Subharmonic segments</a></h4><p>Segments of the subharmonic series can be obtained by prefixing the segment with <code>/</code>, specifying the root and the subharmonic of equivalence e.g. <code>/8::4</code> evaluates to (frequency ratios) <code>[8/7, 8/6, 8/5, 8/4]</code>. Recall that larger subharmonics sound lower so the largest/lowest root pitch should come first if you wish the resulting scale to sound upwards.</p>
+<a id="md:enumerated-chords" class="tsd-anchor"></a><h3><a href="#md:enumerated-chords">Enumerated chords</a></h3><p>Chord enumerations take the first interval and use it as the implied root in a scale e.g. <code>2:3:5</code> evaluates to <code>[3/2, 5/2]</code>.</p>
+<a id="md:reflected-enumerations" class="tsd-anchor"></a><h4><a href="#md:reflected-enumerations">Reflected enumerations</a></h4><p>By default enumeration assumes that we&#39;re dealing with frequency ratios. If you wish to specify ratios of wavelengths, prefix the enumeration with <code>/</code> e.g. <code>/6:5:4:3</code> evaluates to (frequency ratios) <code>[6/5, 6/4, 6/3]</code>.</p>
+<p>In effect <code>/a:b:c</code> is shorthand for <code>1/a:1/b:1/c</code>. The stdlib <code>u()</code> is also an alternative e.g. <code>u(6:5:4:3)</code>. The undertonal <code>u()</code> riff pairs nicely with the overtonal <code>o()</code> riff e.g. <code>o(3:4:5:6)</code>.</p>
+<a id="md:array-access" class="tsd-anchor"></a><h3><a href="#md:array-access">Array access</a></h3><p>Use square brackets to access array elements. Indexing starts from zero. Negative indices count back from the end. <code>$[-1]</code> is a handy shorthand for the last element in the current scale.</p>
+<a id="md:nullish-access" class="tsd-anchor"></a><h4><a href="#md:nullish-access">Nullish access</a></h4><p>Accessing an array out of bounds raises an exception. Javascript-like behavior is available using <code>~[]</code> e.g. <code>arr~[777]</code> evaluates to <code>niente</code> if the array doesn&#39;t have at least 778 elements.</p>
+<a id="md:using-an-array-of-indices" class="tsd-anchor"></a><h4><a href="#md:using-an-array-of-indices">Using an array of indices</a></h4><p>To obtain a subset of an array use an array of indices e.g. <code>[1, 2, 3, 4][0, 2]</code> evaluates to <code>[1, 3]</code>.</p>
+<a id="md:using-an-array-of-booleans" class="tsd-anchor"></a><h4><a href="#md:using-an-array-of-booleans">Using an array of booleans</a></h4><p>Another way to obtain a subset is to use an array of booleans. This works especially well with vectorized operators like <code>&gt;</code> here:</p>
+<pre><code class="language-javascript"><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">smallPrimes</span><span class="hl-1"> = [</span><span class="hl-0">2</span><span class="hl-1">, </span><span class="hl-0">3</span><span class="hl-1">, </span><span class="hl-0">5</span><span class="hl-1">, </span><span class="hl-0">7</span><span class="hl-1">, </span><span class="hl-0">11</span><span class="hl-1">]</span><br/><span class="hl-2">smallPrimes</span><span class="hl-1">[</span><span class="hl-2">smallPrimes</span><span class="hl-1"> &gt; </span><span class="hl-0">4</span><span class="hl-1">]</span>
+</code><button>Copy</button></pre>
+<p>results in <code>$ = [5, 7, 11]</code></p>
+<a id="md:slices" class="tsd-anchor"></a><h3><a href="#md:slices">Slices</a></h3><p>Range syntax inside array access gets a copy of a subset the array e.g. <code>[1, 2, 3, 4][2..3]</code> evaluates to <code>[3, 4]</code>.</p>
+<p>In slice syntax the end points are optional e.g. <code>[1, 2, 3][..]</code> evaluates to <code>[1, 2, 3]</code> (a new copy).</p>
+<a id="md:records" class="tsd-anchor"></a><h2><a href="#md:records">Records</a></h2><p>Record literals are constructed using <code>key: value</code> pairs inside curly brackets e.g. <code>{fif: 3/2, &quot;my octave&quot;: 2/1}</code>.</p>
+<a id="md:record-access" class="tsd-anchor"></a><h3><a href="#md:record-access">Record access</a></h3><p>Records are accessed with the same syntax as arrays but using string indices e.g. <code>{fif: 3/2}[&quot;fif&quot;]</code> evaluates to <code>3/2</code>.</p>
+<p>Nullish access is supported e.g. <code>{}~[&quot;nothing here&quot;]</code> evaluates to <code>niente</code>.</p>
+<a id="md:metric-prefixes" class="tsd-anchor"></a><h2><a href="#md:metric-prefixes">Metric prefixes</a></h2><p>Frequency literals support <a href="https://en.wikipedia.org/wiki/Metric_prefix">metric prefixes</a> e.g. <code>1.2 kHz</code> is the same as <code>1200 Hz</code>. <a href="https://en.wikipedia.org/wiki/Binary_prefix">Binary prefixes</a> are also supported for no particular reason.</p>
+<a id="md:numeric-frequency-flavor" class="tsd-anchor"></a><h2><a href="#md:numeric-frequency-flavor">Numeric frequency flavor</a></h2><p>The space is mandatory in frequency literals like <code>123 hz</code> but there is a numeric <em>flavor</em> &#39;z&#39; for quick input i.e. <code>123z</code>.</p>
+<a id="md:truth-values" class="tsd-anchor"></a><h2><a href="#md:truth-values">Truth values</a></h2><p>Unlike Javascript the empty array <code>[]</code> is <em>falsy</em> similar to Python.</p>
+<a id="md:comments" class="tsd-anchor"></a><h2><a href="#md:comments">Comments</a></h2><p>Everything after two slashes (<code>//</code>) is ignored until the end of the line.</p>
+<p>Everything after a slash and an asterisk (<code>/*</code>) is ignored until an asterisk and a slash (<code>*/</code>) is encountered.</p>
+<a id="md:pythagorean-notation" class="tsd-anchor"></a><h2><a href="#md:pythagorean-notation">Pythagorean notation</a></h2><p>The octave <code>2/1</code> is divided into 7 degrees, some of which have two basic qualities.</p>
+<table>
+<thead>
+<tr>
+<th>Name(s)</th>
+<th>Literal(s)</th>
+<th>Value(s)</th>
+<th>Size(s) in cents</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>(Perfect) unison</td>
+<td><code>P1</code></td>
+<td><code>1/1</code></td>
+<td><code>0.000</code></td>
+</tr>
+<tr>
+<td>Minor/major second</td>
+<td><code>m2</code>, <code>M2</code></td>
+<td><code>256/243</code>, <code>9/8</code></td>
+<td><code>90.225</code>, <code>203.910</code></td>
+</tr>
+<tr>
+<td>Minor/major third</td>
+<td><code>m3</code>, <code>M3</code></td>
+<td><code>32/27</code>, <code>81/64</code></td>
+<td><code>294.135</code>, <code>407.820</code></td>
+</tr>
+<tr>
+<td>Perfect fourth</td>
+<td><code>P4</code></td>
+<td><code>4/3</code></td>
+<td><code>498.045</code></td>
+</tr>
+<tr>
+<td>Perfect fifth</td>
+<td><code>P5</code></td>
+<td><code>3/2</code></td>
+<td><code>701.955</code></td>
+</tr>
+<tr>
+<td>Minor/major sixth</td>
+<td><code>m6</code>, <code>M6</code></td>
+<td><code>128/81</code>, <code>27/16</code></td>
+<td><code>792.180</code>, <code>905.865</code></td>
+</tr>
+<tr>
+<td>Minor/major seventh</td>
+<td><code>m7</code>, <code>M7</code></td>
+<td><code>16/9</code>, <code>243/128</code></td>
+<td><code>996.090</code>, <code>1109.775</code></td>
+</tr>
+</tbody></table>
+<p>The cycle repeats at the perfect octave <code>P8</code> (exactly <code>1200.000</code> in size) e.g. <code>9/4</code> is a major ninth <code>M9</code> (or <code>1403.910</code>).</p>
+<p>Augmented intervals are <code>2187/2048</code> (or <code>113.685</code>) higher than their perfect/major counterparts e.g. <code>a4</code> is <code>729/512</code> (or <code>611.730</code>). Diminished intervals are correspondingly lower than their perfect/minor counterparts e.g. <code>d3</code> is <code>65536/59049</code> (or <code>180.450</code>).</p>
+<p>The lowercase <code>a</code> is used to indicate the augmented quality to make absolute notation consistently uppercase. For visually uppercase augmented intervals you can use <em>Latin Capital Letter A with Circumflex</em> Â e.g. <code>Â4</code> for the augmented fourth. The mnemonic is that the circumflex points up and thus means a wider interval.</p>
+<a id="md:absolute-notation" class="tsd-anchor"></a><h3><a href="#md:absolute-notation">Absolute notation</a></h3><p>Absolute notation is rooted on (relative) <code>C4 = 1/1</code> by default, but it is recommended that you set an absolute frequency like <code>C4 = mtof(60)</code> or <code>C4 = 261.6 Hz</code>.</p>
+<p>The Pythagorean nominals from unison to the first octave are.</p>
+<table>
+<thead>
+<tr>
+<th>Nominal</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>C4</code></td>
+<td><code>C4 + P1</code></td>
+</tr>
+<tr>
+<td><code>D4</code></td>
+<td><code>C4 + M2</code></td>
+</tr>
+<tr>
+<td><code>E4</code></td>
+<td><code>C4 + M3</code></td>
+</tr>
+<tr>
+<td><code>F4</code></td>
+<td><code>C4 + P4</code></td>
+</tr>
+<tr>
+<td><code>G4</code></td>
+<td><code>C4 + P5</code></td>
+</tr>
+<tr>
+<td><code>A4</code></td>
+<td><code>C4 + M6</code></td>
+</tr>
+<tr>
+<td><code>B4</code></td>
+<td><code>C4 + M7</code></td>
+</tr>
+<tr>
+<td><code>C5</code></td>
+<td><code>C4 + P8</code></td>
+</tr>
+</tbody></table>
+<p>The <code>a</code> nominal must be in lowercase or combined with a neutral sign (<code>=</code> or  <code>♮</code>) to distinguish it from the <em>augmented</em> inflection.</p>
+<p>The sharp signs (<code>#</code> and <code>♯</code>) correspond to the augmented unison e.g. <code>F#4</code> is <code>F4 + a1</code> or <code>729/512</code> relative to <code>C4</code>.</p>
+<p>The flat signs (<code>b</code> and <code>♭</code>) correspond to the diminished unison e.g. <code>Eb4</code> is <code>E4 + d1</code> or <code>32/27</code> relative to <code>C4</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Accidental</th>
+<th>Monzo</th>
+<th>Size in cents</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>=</code>, <code>♮</code></td>
+<td><code>[0 0&gt;</code></td>
+<td><code>0.000</code></td>
+</tr>
+<tr>
+<td><code>#</code>, <code>♯</code></td>
+<td><code>[-11 7&gt;</code></td>
+<td><code>+113.685</code></td>
+</tr>
+<tr>
+<td><code>x</code>, <code>𝄪</code></td>
+<td><code>[-22 14&gt;</code></td>
+<td><code>+227.370</code></td>
+</tr>
+<tr>
+<td><code>b</code>, <code>♭</code></td>
+<td><code>[11 -7&gt;</code></td>
+<td><code>-113.685</code></td>
+</tr>
+<tr>
+<td><code>bb</code>, <code>𝄫</code></td>
+<td><code>[22 -14&gt;</code></td>
+<td><code>-227.370</code></td>
+</tr>
+</tbody></table>
+<p>Note that above <code>bb</code> is actually a combination of two accidentals. Similarly <code>#x</code> or <code>x#</code> would represent a triple sharp.</p>
+<a id="md:functional-just-system" class="tsd-anchor"></a><h3><a href="#md:functional-just-system">Functional Just System</a></h3><p><a href="https://en.xen.wiki/w/Functional_Just_System">FJS</a> uses Pythagorean notation for powers of 2 and 3.</p>
+<p>Each higher prime number is associated with a comma which is chosen based on simplicity and otonality (the prime being in the numerator) rather than direction. The comma for <code>5</code> is <code>80/81</code> so <code>M6^5</code> is lower in pitch than plain <code>M6</code>. The (logarithmic) <code>M6^5</code> is the same as (linear) <code>27/16 * 80/81</code> or <code>5/3</code>. To go in the opposite direction use a subscript (underscore) e.g. <code>m3_5</code> corresponds to <code>6/5</code>.</p>
+<p>In absolute notation FJS accidentals come after the octave number e.g. the fifth harmonic relative to <code>C4</code> is <code>E6^5</code>.</p>
+<p>The first few commas are:</p>
+<table>
+<thead>
+<tr>
+<th>Prime <code>p</code></th>
+<th><code>P1^p</code></th>
+<th>Monzo</th>
+<th>Size in cents</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>5</code></td>
+<td><code>80/81</code></td>
+<td><code>[4 -4 1&gt;</code></td>
+<td><code>-21.506</code></td>
+</tr>
+<tr>
+<td><code>7</code></td>
+<td><code>63/64</code></td>
+<td><code>[-6 2 0 1&gt;</code></td>
+<td><code>-27.264</code></td>
+</tr>
+<tr>
+<td><code>11</code></td>
+<td><code>33/32</code></td>
+<td><code>[-5 1 0 0 1&gt;</code></td>
+<td><code>+53.273</code></td>
+</tr>
+<tr>
+<td><code>13</code></td>
+<td><code>1053/1024</code></td>
+<td><code>[-10 4 0 0 0 1&gt;</code></td>
+<td><code>+48.348</code></td>
+</tr>
+<tr>
+<td><code>17</code></td>
+<td><code>4131/4096</code></td>
+<td><code>[-12 5 0 0 0 0 1&gt;</code></td>
+<td><code>+14.73</code></td>
+</tr>
+<tr>
+<td><code>19</code></td>
+<td><code>513/512</code></td>
+<td><code>[-9 3 0 0 0 0 0 1&gt;</code></td>
+<td><code>+3.378</code></td>
+</tr>
+<tr>
+<td><code>23</code></td>
+<td><code>736/729</code></td>
+<td><code>[5 -6 0 0 0 0 0 0 1&gt;</code></td>
+<td><code>+16.544</code></td>
+</tr>
+</tbody></table>
+<p>The first few prime harmonics in FJS are:</p>
+<table>
+<thead>
+<tr>
+<th>Reduced harmonic</th>
+<th>FJS</th>
+<th>Absolute FJS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>5/4</code></td>
+<td><code>M3^5</code></td>
+<td><code>E♮4^5</code></td>
+</tr>
+<tr>
+<td><code>7/4</code></td>
+<td><code>m7^7</code></td>
+<td><code>B♭4^7</code></td>
+</tr>
+<tr>
+<td><code>11/8</code></td>
+<td><code>P4^11</code></td>
+<td><code>F♮4^11</code></td>
+</tr>
+<tr>
+<td><code>13/8</code></td>
+<td><code>m6^13</code></td>
+<td><code>A♭4^13</code></td>
+</tr>
+<tr>
+<td><code>17/16</code></td>
+<td><code>m2^17</code></td>
+<td><code>D♭4^17</code></td>
+</tr>
+<tr>
+<td><code>19/16</code></td>
+<td><code>m3^19</code></td>
+<td><code>E♭4^19</code></td>
+</tr>
+<tr>
+<td><code>23/16</code></td>
+<td><code>a4^23</code></td>
+<td><code>F♯4^23</code></td>
+</tr>
+</tbody></table>
+<p>SonicWeave agrees with <a href="https://en.xen.wiki/w/User:FloraC/Critique_on_Functional_Just_System">FloraC&#39;s critique</a> and assigns <code>31/32</code> to <code>P1^31</code>. The classic inflection may be accessed using the <code>c</code> flavor i.e. <code>P1^31c</code> for <code>248/243</code>.</p>
+<a id="md:s-expressions" class="tsd-anchor"></a><h3><a href="#md:s-expressions">S-expressions</a></h3><p>SonicWeave uses the logarithmic domain for <a href="https://en.xen.wiki/w/Square_superparticular">S-expressions</a> in order to make them compatible with FJS.</p>
+<p>So a linear fact like S9 = S6/S8 is expressed as <code>S9 === S6-S8</code> in SonicWeave.</p>
+<p>Sums of consecutive S-expressions use the range syntax. E.g. <code>logarithmic(10/9)</code> is equivalent to <code>S5..8</code> i.e. <code>logarithmic(25/24 * 36/35 * 49/48 * 64/63)</code></p>
+<p>In combination with FJS we can now spell <code>10/7</code> as <code>a4+S8-S9</code> or <code>12/11</code> as <code>M2-S9..11</code>.</p>
+<a id="md:interval-type-system" class="tsd-anchor"></a><h2><a href="#md:interval-type-system">Interval type system</a></h2><p>The interval type system is fairly complex in order to accomodate all types of quantities that can refer to musical pitch or frequency.</p>
+<p>There are three domains, multiple tiers and two echelons which can combine to a plethora of distinct types.</p>
+<a id="md:domains" class="tsd-anchor"></a><h3><a href="#md:domains">Domains</a></h3><p>Quantities can be <em>linear</em> or <em>logarithmic</em>. Linear quantities denote multiplication using <code>*</code> or <code>×</code> while logarithmic quantities achieve the same effect using <code>+</code>. This is a reflection of how the logarithm converts multiplication into addition.</p>
+<p>In mathematics the <em>linear</em> domain is called <em>arithmetic</em>, while the <em>logarithmic</em> domain is referred to as <em>geometric</em>. Some builtin riffs use the <em>geo-</em> prefix to draw analogies between the domains. E.g. <code>geodiff</code> is <code>diff</code> for <em>logarithmic</em> quantities.</p>
+<p>In just intonation you might denote <code>16/9</code> as <code>4/3 * 4/3</code> if you wish to work in the linear domain or indicate the same frequency ratio as <code>m7</code> and split it into <code>P4 + P4</code> if logarithmic thinking suits you better.</p>
+<p>The <em>cologarithmic</em> domain mostly comes up in tempering. An expression like <code>12@ · P4</code> evaluating to <code>5</code> indicates that the perfect fourth is tempered to 5 steps of 12-tone equal temperament. In cologarithmic vector form (a.k.a. <em>val</em>) <code>12@</code> corresponds to <code>&lt;12 19]</code> while <code>P4</code> corresponds to the prime exponents <code>[2 -1&gt;</code> (a.k.a. <em>monzo</em>) so the expression <code>12@ · P4</code> reads <code>&lt;12 19] · [2 -1&gt;</code> = <code>12 * 2 + 19 * (-1)</code> = <code>5</code>.</p>
+<a id="md:tiers" class="tsd-anchor"></a><h3><a href="#md:tiers">Tiers</a></h3><ul>
+<li>natural (<code>1</code>, <code>-3</code>, <code>7</code>, <code>P8</code>, etc.)</li>
+<li>decimal (<code>1,2</code>, <code>3.14e0</code>, <code>5/4</code>, etc.)</li>
+<li>rational (<code>5/3</code>, <code>P4</code>, <code>M2_7</code>, etc.)</li>
+<li>radical (<code>sqrt(2)</code>, <code>9\13&lt;3&gt;</code>, <code>n3</code>, etc.)</li>
+<li>real (<code>2.718281828459045r</code>, <code>3.141592653589793r</code>, etc.)</li>
+</ul>
+<p>The <code>r</code> at the end of real literals just means that they&#39;re not cents or associated with the octave in any way.</p>
+<a id="md:echelons" class="tsd-anchor"></a><h3><a href="#md:echelons">Echelons</a></h3><p>Quantities can be absolute such as <code>440 Hz</code> and <code>C♮4</code>, or relative like <code>M2</code> and <code>7/5</code>.</p>
+<p>Multiplication of absolute quantities is interpreted as their geometric average: <code>361 Hz * 529 Hz</code> corresponds to <code>437 Hz</code> in the scale.</p>
+<p>Same goes for logarithmic absolute quantities: <code>C♮4 + E♮4</code> corresponds to <code>D♮4</code> in the scale if you&#39;ve declared <code>C♮4</code> as absolute quantity.</p>
+<a id="md:variable-declaration" class="tsd-anchor"></a><h2><a href="#md:variable-declaration">Variable declaration</a></h2><p>Variables can be declared using the keyword <code>let</code> or <code>const</code> and a single <em>equals</em> sign e.g. <code>const k = logarithmic(5120/5103)</code> defines a handy inflection such that <code>7/5</code> can be spelled <code>d5-k</code> while <code>a4+k</code> now corresponds to <code>10/7</code>.</p>
+<p>Only variables declared using <code>let</code> can be re-assigned later.</p>
+<a id="md:re-assignment" class="tsd-anchor"></a><h3><a href="#md:re-assignment">Re-assignment</a></h3><p>Variables can be reassigned for example after <code>let i = 2</code> declaring <code>i += 3</code> sets <code>i</code> to <code>5</code>.</p>
+<a id="md:pitch-declaration" class="tsd-anchor"></a><h2><a href="#md:pitch-declaration">Pitch declaration</a></h2><p>Pitch declaration can be relative e.g. <code>C0 = 1/1</code> or absolute e.g. <code>A4 = 440 Hz</code>.</p>
+<p>Using a middle value determines the nature of absolute notation e.g. <code>A4 = 440 Hz = 27/16</code> sets <code>A4</code> to <code>logarithmic(440 Hz)</code> while <code>A4 = 27/16 = 440 Hz</code> sets <code>A4</code> to <code>M6</code> (i.e. <code>logarithmic(27/16)</code>).</p>
+<p>The unison frequency is set implicitly when declaring pitch, but can be set explicitly too e.g. <code>1/1 = 420 Hz</code>.</p>
+<a id="md:blocks" class="tsd-anchor"></a><h2><a href="#md:blocks">Blocks</a></h2><p>Blocks start with a curly bracket <code>{</code>, have their own instance of a current scale <code>$</code> and end with <code>}</code>. The current scale is unrolled onto the parent scale at the end of the block.</p>
+<a id="md:parent-scale" class="tsd-anchor"></a><h3><a href="#md:parent-scale">Parent scale</a></h3><p>The current scale of the parent block can be accessed using <code>$$</code>.</p>
+<a id="md:while" class="tsd-anchor"></a><h2><a href="#md:while">While</a></h2><p>&quot;While&quot; loops repeat a statement until the test becames <em>falsy</em> e.g.</p>
+<pre><code class="language-javascript"><span class="hl-4">let</span><span class="hl-1"> </span><span class="hl-2">i</span><span class="hl-1"> = </span><span class="hl-0">5</span><br/><span class="hl-6">while</span><span class="hl-1"> (--</span><span class="hl-2">i</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-2">i</span><br/><span class="hl-1">}</span>
+</code><button>Copy</button></pre>
+<p>results in <code>$ = [4, 3, 2, 1]</code>.</p>
+<a id="md:forof" class="tsd-anchor"></a><h2><a href="#md:forof">For...of</a></h2><p>&quot;For..of&quot; loops iterate over array contents or record values e.g.</p>
+<pre><code class="language-javascript"><span class="hl-6">for</span><span class="hl-1"> (</span><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">i</span><span class="hl-1"> </span><span class="hl-4">of</span><span class="hl-1"> [</span><span class="hl-0">1..5</span><span class="hl-1">]) {</span><br/><span class="hl-1">  </span><span class="hl-0">2</span><span class="hl-1"> ^ (</span><span class="hl-2">i</span><span class="hl-1"> % </span><span class="hl-0">5</span><span class="hl-1">)</span><br/><span class="hl-1">}</span>
+</code><button>Copy</button></pre>
+<p>results in <code>$ = [2^1/5, 2^2/5, 2^3/5, 2^4/5, 2]</code>.</p>
+<a id="md:forin" class="tsd-anchor"></a><h2><a href="#md:forin">For..in</a></h2><p>&quot;For..in&quot; loops iterate over array indices or record keys e.g.</p>
+<pre><code class="language-javascript"><span class="hl-6">for</span><span class="hl-1"> (</span><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">k</span><span class="hl-1"> </span><span class="hl-4">in</span><span class="hl-1"> {</span><span class="hl-2">a:</span><span class="hl-1"> </span><span class="hl-0">123</span><span class="hl-1">, </span><span class="hl-2">b:</span><span class="hl-1"> </span><span class="hl-0">456</span><span class="hl-1">}) {</span><br/><span class="hl-1">  </span><span class="hl-0">1</span><span class="hl-1"> </span><span class="hl-2">k</span><br/><span class="hl-1">}</span>
+</code><button>Copy</button></pre>
+<p>results in <code>$ = [1 &quot;b&quot;, 1 &quot;a&quot;]</code>. The order is indeterministic.</p>
+<a id="md:break" class="tsd-anchor"></a><h2><a href="#md:break">Break</a></h2><p>&quot;While&quot; and &quot;for&quot; loops can be broken out of using the <code>break</code> keyword.</p>
+<pre><code class="language-javascript"><span class="hl-6">for</span><span class="hl-1"> (</span><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">i</span><span class="hl-1"> </span><span class="hl-4">of</span><span class="hl-1"> [</span><span class="hl-0">1..10</span><span class="hl-1">]) {</span><br/><span class="hl-1">  </span><span class="hl-2">i</span><span class="hl-1"> \ </span><span class="hl-0">6</span><br/><span class="hl-1">  </span><span class="hl-6">if</span><span class="hl-1"> (</span><span class="hl-2">i</span><span class="hl-1"> &gt;= </span><span class="hl-0">6</span><span class="hl-1">)</span><br/><span class="hl-1">    </span><span class="hl-6">break</span><br/><span class="hl-1">}</span>
+</code><button>Copy</button></pre>
+<p>results in <code>$ = [1\6, 2\6, 3\6, 4\6, 5\6, 6\6]</code>.</p>
+<a id="md:continue" class="tsd-anchor"></a><h2><a href="#md:continue">Continue</a></h2><p>The <code>continue</code> keyword terminates the execution of the current iteration of a &quot;while&quot; or &quot;for&quot; loop and continues with the next iteration.</p>
+<pre><code class="language-javascript"><span class="hl-4">let</span><span class="hl-1"> </span><span class="hl-2">i</span><span class="hl-1"> = </span><span class="hl-0">8</span><span class="hl-1">;</span><br/><span class="hl-6">while</span><span class="hl-1"> (</span><span class="hl-2">i</span><span class="hl-1">++ &lt; </span><span class="hl-0">16</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-6">if</span><span class="hl-1"> (</span><span class="hl-2">i</span><span class="hl-1"> &gt; </span><span class="hl-0">12</span><span class="hl-1"> </span><span class="hl-2">and</span><span class="hl-1"> </span><span class="hl-2">i</span><span class="hl-1"> </span><span class="hl-2">mod</span><span class="hl-1"> </span><span class="hl-0">2</span><span class="hl-1">) {</span><br/><span class="hl-1">    </span><span class="hl-6">continue</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">  </span><span class="hl-2">i</span><span class="hl-1"> % </span><span class="hl-0">8</span><span class="hl-1">;</span><br/><span class="hl-1">}</span>
+</code><button>Copy</button></pre>
+<p>results in <code>$ = [9/8, 10/8, 11/8, 12/8, 14/8, 16/8]</code>.</p>
+<a id="md:whileelse-and-forofelse" class="tsd-anchor"></a><h2><a href="#md:whileelse-and-forofelse">While..else and for..of..else</a></h2><p>The <code>else</code> branch of a &quot;while&quot; or &quot;for&quot; loop is executed if no <code>break</code> statement was encountered e.g. this computes all primes below 12:</p>
+<pre><code class="language-javascript"><span class="hl-6">for</span><span class="hl-1"> (</span><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">i</span><span class="hl-1"> </span><span class="hl-4">of</span><span class="hl-1"> [</span><span class="hl-0">2..12</span><span class="hl-1">]) {</span><br/><span class="hl-1">  </span><span class="hl-6">for</span><span class="hl-1"> (</span><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">j</span><span class="hl-1"> </span><span class="hl-4">of</span><span class="hl-1"> [</span><span class="hl-0">2.</span><span class="hl-1">.</span><span class="hl-2">i</span><span class="hl-1">-</span><span class="hl-0">1</span><span class="hl-1">]) {</span><br/><span class="hl-1">    </span><span class="hl-6">if</span><span class="hl-1"> (</span><span class="hl-2">i</span><span class="hl-1"> </span><span class="hl-2">mod</span><span class="hl-1"> </span><span class="hl-2">j</span><span class="hl-1"> === </span><span class="hl-0">0</span><span class="hl-1">) </span><span class="hl-6">break</span><span class="hl-1">;</span><br/><span class="hl-1">  } </span><span class="hl-6">else</span><span class="hl-1"> {</span><br/><span class="hl-1">    </span><span class="hl-2">i</span><span class="hl-1">;</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">}</span>
+</code><button>Copy</button></pre>
+<p>result is <code>$ = [2, 3, 5, 7, 11]</code>.</p>
+<a id="md:array-comprehensions" class="tsd-anchor"></a><h3><a href="#md:array-comprehensions">Array comprehensions</a></h3><p>&quot;For&quot; loops have an inline counterpart in array comprehensions e.g.</p>
+<pre><code class="language-javascript"><span class="hl-1">[</span><span class="hl-0">2</span><span class="hl-1"> ^ </span><span class="hl-2">i</span><span class="hl-1"> /^</span><span class="hl-0">7</span><span class="hl-1"> </span><span class="hl-2">for</span><span class="hl-1"> </span><span class="hl-2">i</span><span class="hl-1"> </span><span class="hl-4">of</span><span class="hl-1"> [</span><span class="hl-0">1..7</span><span class="hl-1">]]</span>
+</code><button>Copy</button></pre>
+<p>results in <code>$ = [2^1/7, 2^2/7, 2^3/7, 2^4/7, 2^5/7, 2^6/7, 2]</code>.</p>
+<a id="md:if-clause" class="tsd-anchor"></a><h4><a href="#md:if-clause">If clause</a></h4><p>To conditionally include elements use an <code>if</code> clause e.g.</p>
+<pre><code class="language-javascript"><span class="hl-1">[</span><span class="hl-2">i</span><span class="hl-1"> </span><span class="hl-2">for</span><span class="hl-1"> </span><span class="hl-2">i</span><span class="hl-1"> </span><span class="hl-4">of</span><span class="hl-1"> [</span><span class="hl-0">1..9</span><span class="hl-1">] </span><span class="hl-2">if</span><span class="hl-1"> </span><span class="hl-2">i</span><span class="hl-1"> </span><span class="hl-2">mod</span><span class="hl-1"> </span><span class="hl-0">3</span><span class="hl-1"> !== </span><span class="hl-0">0</span><span class="hl-1">]</span>
+</code><button>Copy</button></pre>
+<p>results in <code>$ = [1, 2, 4, 5, 7, 8]</code> i.e. all <a href="https://en.xen.wiki/w/Threeven">throdd</a> numbers below 10.</p>
+<p>Above the <code>!== 0</code> part is unnecessary. <code>[i for i of [1..9] if i mod 3]</code> works the same because <code>0</code> is falsy while <code>1</code> and <code>2</code> are truthy.</p>
+<a id="md:vector-operations" class="tsd-anchor"></a><h3><a href="#md:vector-operations">Vector operations</a></h3><p>Operators operate componentwise on arrays e.g.</p>
+<pre><code class="language-javascript"><span class="hl-1">[</span><span class="hl-0">1</span><span class="hl-1">, </span><span class="hl-0">2</span><span class="hl-1">, </span><span class="hl-0">3</span><span class="hl-1">] + [</span><span class="hl-0">10</span><span class="hl-1">, </span><span class="hl-0">20</span><span class="hl-1">, </span><span class="hl-0">300</span><span class="hl-1">]</span>
+</code><button>Copy</button></pre>
+<p>results in <code>$ = [11, 22, 303]</code>.</p>
+<a id="md:array-broadcasting" class="tsd-anchor"></a><h3><a href="#md:array-broadcasting">Array broadcasting</a></h3><p>Non-array operands operate on each component of an array e.g.</p>
+<pre><code class="language-javascript"><span class="hl-1">[</span><span class="hl-0">2</span><span class="hl-1">, </span><span class="hl-0">4</span><span class="hl-1">, </span><span class="hl-0">7</span><span class="hl-1">, </span><span class="hl-0">9</span><span class="hl-1">, </span><span class="hl-0">12</span><span class="hl-1">] \ </span><span class="hl-0">12</span>
+</code><button>Copy</button></pre>
+<p>results in <code>$ = [2\12, 4\12, 7\12, 9\12, 12\12]</code>.</p>
+<a id="md:ifelse" class="tsd-anchor"></a><h2><a href="#md:ifelse">If...else</a></h2><p>Conditional statements are evaluated if the test expression evaluates to <code>true</code> otherwise the <code>else</code> branch is taken.</p>
+<pre><code class="language-javascript"><span class="hl-6">if</span><span class="hl-1"> (</span><span class="hl-0">3</span><span class="hl-1">/</span><span class="hl-0">2</span><span class="hl-1"> &gt; </span><span class="hl-0">700.</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-7">print</span><span class="hl-1">(</span><span class="hl-3">&quot;The Pythagorean fifth is larger than the perfect fifth of 12-TET&quot;</span><span class="hl-1">)</span><br/><span class="hl-1">} </span><span class="hl-6">else</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-7">print</span><span class="hl-1">(</span><span class="hl-3">&quot;This won&#39;t print&quot;</span><span class="hl-1">)</span><br/><span class="hl-1">}</span>
+</code><button>Copy</button></pre>
+<a id="md:ternary-expressions" class="tsd-anchor"></a><h3><a href="#md:ternary-expressions">Ternary expressions</a></h3><p>Conditional expressions look similar but work inline e.g. <code>3 if true else 5</code> evaluates to <code>3</code> while <code>3 if false else 5</code> evaluates to <code>5</code>.</p>
+<a id="md:function-declaration" class="tsd-anchor"></a><h2><a href="#md:function-declaration">Function declaration</a></h2><p>Functions are declared using the <code>riff</code> keyword followed by the name of the function followed by the parameters of the function.</p>
+<pre><code class="language-javascript"><span class="hl-2">riff</span><span class="hl-1"> </span><span class="hl-7">subharmonics</span><span class="hl-1">(</span><span class="hl-2">start</span><span class="hl-1">, </span><span class="hl-2">end</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-6">return</span><span class="hl-1"> </span><span class="hl-7">retroverted</span><span class="hl-1">(</span><span class="hl-2">start</span><span class="hl-1">::</span><span class="hl-2">end</span><span class="hl-1">)</span><br/><span class="hl-1">}</span>
+</code><button>Copy</button></pre>
+<p>Above the <code>return</code> statement is suprefluous. We could&#39;ve left it out and let the result unroll out of the block.</p>
+<p>Default values for function parameters may be given using <code>param = value</code> syntax.</p>
+<p>Due to popular demand there&#39;s also the <code>fn</code> alias for function declaration.</p>
+<pre><code class="language-javascript"><span class="hl-2">fn</span><span class="hl-1"> </span><span class="hl-7">pythagoras</span><span class="hl-1">(</span><span class="hl-2">up</span><span class="hl-1">, </span><span class="hl-2">down</span><span class="hl-1"> = </span><span class="hl-0">0</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-7">sorted</span><span class="hl-1">([</span><span class="hl-0">3</span><span class="hl-1">^</span><span class="hl-2">i</span><span class="hl-1"> </span><span class="hl-2">rdc</span><span class="hl-1"> </span><span class="hl-0">2</span><span class="hl-1"> </span><span class="hl-2">for</span><span class="hl-1"> </span><span class="hl-2">i</span><span class="hl-1"> </span><span class="hl-4">of</span><span class="hl-1"> [-</span><span class="hl-2">down</span><span class="hl-1">..</span><span class="hl-2">up</span><span class="hl-1">]])</span><br/><span class="hl-1">}</span>
+</code><button>Copy</button></pre>
+<a id="md:calling-functions" class="tsd-anchor"></a><h3><a href="#md:calling-functions">Calling functions</a></h3><p>Once declared, functions can be called: <code>subharmonics(4, 8)</code> evaluates to <code>[8/7, 8/6, 8/5, 8/4]</code>,</p>
+<p>while <code>pythagoras(4)</code> evaluates to <code>[9/8, 81/64, 3/2, 27/16, 2]</code>. The missing <code>down</code> argument defaulted to <code>0</code>.</p>
+<a id="md:lambda-expressions" class="tsd-anchor"></a><h3><a href="#md:lambda-expressions">Lambda expressions</a></h3><p>Functions can be defined inline using the arrow (<code>=&gt;</code>). e.g. <code>const subharmonics = ((start, end) =&gt; retroverted(start::end))</code>.</p>
+<a id="md:throwing" class="tsd-anchor"></a><h2><a href="#md:throwing">Throwing</a></h2><p>To interupt execution you can throw string messages.</p>
+<pre><code class="language-javascript"><span class="hl-6">if</span><span class="hl-1"> (</span><span class="hl-0">2</span><span class="hl-1"> &lt; </span><span class="hl-0">1</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-7">print</span><span class="hl-1">(</span><span class="hl-3">&quot;This won&#39;t print&quot;</span><span class="hl-1">)</span><br/><span class="hl-1">} </span><span class="hl-6">else</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-6">throw</span><span class="hl-1"> </span><span class="hl-3">&quot;This will be thrown&quot;</span><br/><span class="hl-1">}</span>
+</code><button>Copy</button></pre>
+<a id="md:exception-handling" class="tsd-anchor"></a><h2><a href="#md:exception-handling">Exception handling</a></h2><p>To resume execution after an error use <code>try</code>, <code>catch</code> and <code>finally</code>.</p>
+<pre><code class="language-javascript"><span class="hl-6">try</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-7">fraction</span><span class="hl-1">(</span><span class="hl-5">PI</span><span class="hl-1">) </span><span class="hl-8">// This throws because PI is irrational.</span><br/><span class="hl-1">  </span><span class="hl-7">print</span><span class="hl-1">(</span><span class="hl-3">&quot;This won&#39;t print&quot;</span><span class="hl-1">);</span><br/><span class="hl-1">} </span><span class="hl-6">catch</span><span class="hl-1"> (</span><span class="hl-2">e</span><span class="hl-1">) {</span><br/><span class="hl-1">  </span><span class="hl-7">print</span><span class="hl-1">(</span><span class="hl-3">&quot;Caught an exception!&quot;</span><span class="hl-1">);</span><br/><span class="hl-1">  </span><span class="hl-7">print</span><span class="hl-1">(</span><span class="hl-2">e</span><span class="hl-1">); </span><span class="hl-8">// Prints: &quot;Input is irrational and no tolerance given.&quot;</span><br/><span class="hl-1">} </span><span class="hl-6">finally</span><span class="hl-1"> {</span><br/><span class="hl-1">  </span><span class="hl-7">print</span><span class="hl-1">(</span><span class="hl-3">&quot;This will print regardless.&quot;</span><span class="hl-1">);</span><br/><span class="hl-1">}</span>
+</code><button>Copy</button></pre>
+<a id="md:lest-expressions" class="tsd-anchor"></a><h2><a href="#md:lest-expressions">Lest expressions</a></h2><p>The inline version of <code>try..catch</code> is called <code>lest</code>. The latter expression is tried and replaced by the former on failure.</p>
+<pre><code class="language-javascript"><span class="hl-5">P5</span><span class="hl-1"> </span><span class="hl-2">lest</span><span class="hl-1"> </span><span class="hl-7">fraction</span><span class="hl-1">(</span><span class="hl-5">P5</span><span class="hl-1">) </span><span class="hl-8">// Successfully evaluates to 3/2</span><br/><span class="hl-5">PI</span><span class="hl-1"> </span><span class="hl-2">lest</span><span class="hl-1"> </span><span class="hl-7">fraction</span><span class="hl-1">(</span><span class="hl-5">PI</span><span class="hl-1">) </span><span class="hl-8">// Falls back to 3.141592653589793r</span>
+</code><button>Copy</button></pre>
+<a id="md:implicit-mapping" class="tsd-anchor"></a><h2><a href="#md:implicit-mapping">Implicit mapping</a></h2><p>The default action when encountering a function is to remap the current scale using it.</p>
+<pre><code class="language-javascript"><span class="hl-7">primes</span><span class="hl-1">(</span><span class="hl-0">3</span><span class="hl-1">, </span><span class="hl-0">17</span><span class="hl-1">)</span><br/><span class="hl-2">prime</span><span class="hl-1"> </span><span class="hl-4">=&gt;</span><span class="hl-1"> </span><span class="hl-2">prime</span><span class="hl-1"> </span><span class="hl-2">rd</span><span class="hl-1"> </span><span class="hl-0">2</span><br/><span class="hl-0">2</span><br/><span class="hl-7">sort</span><span class="hl-1">()</span>
+</code><button>Copy</button></pre>
+<p>First results in <code>$ = [3, 5, 7, 11, 13, 17]</code> which gets reduced to <code>$ = [3/2, 5/4, 7/4, 11/8, 13/8, 17/16]</code>. Adding the octave and sorting gives the final result <code>$ = [17/16, 5/4, 11/8, 3/2, 13/8, 7/4, 2]</code>.</p>
+<p>Or the same with a oneliner <code>sorted(map(prime =&gt; prime rdc 2, primes(17)))</code> demonstrating the utility of <em>ceiling reduction</em> in a context where the unison is implicit and coincides with repeated octaves.</p>
+<a id="md:tempering" class="tsd-anchor"></a><h2><a href="#md:tempering">Tempering</a></h2><p>In SonicWeave tempering refers to measuring the prime counts of intervals and replacing the primes with close (or at least consistent) approximations.</p>
+<p>Let&#39;s say we have this major chord as our scale <code>$ = [5/4, 3/2, 2]</code> and we wish to convert it to 12-tone equal temperament.</p>
+<p>First we&#39;ll measure out the primes:</p>
+<pre><code class="language-javascript"><span class="hl-0">2</span><span class="hl-1">^-</span><span class="hl-0">2</span><span class="hl-1"> * </span><span class="hl-0">3</span><span class="hl-1">^</span><span class="hl-0">0</span><span class="hl-1"> * </span><span class="hl-0">5</span><span class="hl-1">^</span><span class="hl-0">1</span><br/><span class="hl-0">2</span><span class="hl-1">^-</span><span class="hl-0">1</span><span class="hl-1"> * </span><span class="hl-0">3</span><span class="hl-1">^</span><span class="hl-0">1</span><span class="hl-1"> * </span><span class="hl-0">5</span><span class="hl-1">^</span><span class="hl-0">0</span><br/><span class="hl-0">2</span><span class="hl-1">^+</span><span class="hl-0">1</span><span class="hl-1"> * </span><span class="hl-0">3</span><span class="hl-1">^</span><span class="hl-0">0</span><span class="hl-1"> * </span><span class="hl-0">5</span><span class="hl-1">^</span><span class="hl-0">0</span>
+</code><button>Copy</button></pre>
+<p>Then we replace each prime with their closest approximation:</p>
+<pre><code class="language-javascript"><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">st</span><span class="hl-1"> = </span><span class="hl-0">2</span><span class="hl-1">^</span><span class="hl-0">1</span><span class="hl-1">/</span><span class="hl-0">12</span><span class="hl-1"> </span><span class="hl-8">// One semitone</span><br/><br/><span class="hl-1">(</span><span class="hl-0">2</span><span class="hl-1"> </span><span class="hl-2">by</span><span class="hl-1"> </span><span class="hl-2">st</span><span class="hl-1">)^-</span><span class="hl-0">2</span><span class="hl-1"> * (</span><span class="hl-0">3</span><span class="hl-1"> </span><span class="hl-2">by</span><span class="hl-1"> </span><span class="hl-2">st</span><span class="hl-1">)^</span><span class="hl-0">0</span><span class="hl-1"> * (</span><span class="hl-0">5</span><span class="hl-1"> </span><span class="hl-2">by</span><span class="hl-1"> </span><span class="hl-2">st</span><span class="hl-1">)^</span><span class="hl-0">1</span><br/><span class="hl-1">(</span><span class="hl-0">2</span><span class="hl-1"> </span><span class="hl-2">by</span><span class="hl-1"> </span><span class="hl-2">st</span><span class="hl-1">)^-</span><span class="hl-0">1</span><span class="hl-1"> * (</span><span class="hl-0">3</span><span class="hl-1"> </span><span class="hl-2">by</span><span class="hl-1"> </span><span class="hl-2">st</span><span class="hl-1">)^</span><span class="hl-0">1</span><span class="hl-1"> * (</span><span class="hl-0">5</span><span class="hl-1"> </span><span class="hl-2">by</span><span class="hl-1"> </span><span class="hl-2">st</span><span class="hl-1">)^</span><span class="hl-0">0</span><br/><span class="hl-1">(</span><span class="hl-0">2</span><span class="hl-1"> </span><span class="hl-2">by</span><span class="hl-1"> </span><span class="hl-2">st</span><span class="hl-1">)^+</span><span class="hl-0">1</span><span class="hl-1"> * (</span><span class="hl-0">3</span><span class="hl-1"> </span><span class="hl-2">by</span><span class="hl-1"> </span><span class="hl-2">st</span><span class="hl-1">)^</span><span class="hl-0">0</span><span class="hl-1"> * (</span><span class="hl-0">5</span><span class="hl-1"> </span><span class="hl-2">by</span><span class="hl-1"> </span><span class="hl-2">st</span><span class="hl-1">)^</span><span class="hl-0">0</span>
+</code><button>Copy</button></pre>
+<p>Which results in <code>$ = [2^4/12, 2^7/12, 2^12/12]</code>.</p>
+<a id="md:implicit-tempering" class="tsd-anchor"></a><h3><a href="#md:implicit-tempering">Implicit tempering</a></h3><p>The above could&#39;ve been achieved by</p>
+<pre><code class="language-javascript"><span class="hl-1">[</span><span class="hl-0">5</span><span class="hl-1">/</span><span class="hl-0">4</span><span class="hl-1">, </span><span class="hl-0">3</span><span class="hl-1">/</span><span class="hl-0">2</span><span class="hl-1">, </span><span class="hl-0">2</span><span class="hl-1">]</span><br/><span class="hl-2">i</span><span class="hl-1"> </span><span class="hl-4">=&gt;</span><span class="hl-1"> </span><span class="hl-0">12</span><span class="hl-1">@ </span><span class="hl-2">dot</span><span class="hl-1"> </span><span class="hl-2">i</span><span class="hl-1"> \ </span><span class="hl-0">12</span>
+</code><button>Copy</button></pre>
+<p>The only difference is the logarithmic format <code>$ = [4\12, 7\12, 12\12]</code>.</p>
+<p>The default action when encountering a val such as <code>12@</code> is to temper the current scale with it.</p>
+<p>The above reduces to</p>
+<pre><code class="language-javascript"><span class="hl-1">[</span><span class="hl-0">5</span><span class="hl-1">/</span><span class="hl-0">4</span><span class="hl-1">, </span><span class="hl-0">3</span><span class="hl-1">/</span><span class="hl-0">2</span><span class="hl-1">, </span><span class="hl-0">2</span><span class="hl-1">]</span><br/><span class="hl-0">12</span><span class="hl-1">@</span>
+</code><button>Copy</button></pre>
+<a id="md:using-ups-and-downs" class="tsd-anchor"></a><h3><a href="#md:using-ups-and-downs">Using ups and downs</a></h3><p>By default the up inflection (<code>^</code>) corresponds to one step upwards irregardless of the equal temperament while the down inflection (<code>v</code>) corresponds to one step downwards.</p>
+<p>This can make notation shorter. The 5-limit major scale in 22-tone equal temperament is:</p>
+<pre><code class="language-javascript"><span class="hl-5">M2</span><br/><span class="hl-5">M3</span><span class="hl-1">^</span><span class="hl-0">5</span><br/><span class="hl-5">P4</span><br/><span class="hl-5">P5</span><br/><span class="hl-5">M6</span><span class="hl-1">^</span><span class="hl-0">5</span><br/><span class="hl-5">M7</span><span class="hl-1">^</span><span class="hl-0">5</span><br/><span class="hl-5">P8</span><br/><span class="hl-0">22</span><span class="hl-1">@</span>
+</code><button>Copy</button></pre>
+<p>Using downs the direction of inflection is more clear:</p>
+<pre><code class="language-javascript"><span class="hl-5">M2</span><br/><span class="hl-2">vM3</span><br/><span class="hl-5">P4</span><br/><span class="hl-5">P5</span><br/><span class="hl-2">vM6</span><br/><span class="hl-2">vM7</span><br/><span class="hl-5">P8</span><br/><span class="hl-0">22</span><span class="hl-1">@</span>
+</code><button>Copy</button></pre>
+<a id="md:tweaking-ups-and-downs" class="tsd-anchor"></a><h3><a href="#md:tweaking-ups-and-downs">Tweaking ups and downs</a></h3><p>To control what ups and downs correspond to, you can use an up declaration:</p>
+<pre><code class="language-javascript"><span class="hl-1">^ = </span><span class="hl-0">81</span><span class="hl-1">/</span><span class="hl-0">80</span><br/><br/><span class="hl-5">M2</span><br/><span class="hl-2">vM3</span><br/><span class="hl-5">P4</span><br/><span class="hl-5">P5</span><br/><span class="hl-2">vM6</span><br/><span class="hl-2">vM7</span><br/><span class="hl-5">P8</span><br/><br/><span class="hl-0">311</span><span class="hl-1">@</span>
+</code><button>Copy</button></pre>
+<p>In this case we could&#39;ve also set lifts equal to six steps of 311edo to preserve <code>^</code> and <code>v</code> for small adjustments.</p>
+<pre><code class="language-javascript"><span class="hl-1">/ = </span><span class="hl-0">6</span><span class="hl-1">\</span><br/><br/><span class="hl-5">M2</span><br/><span class="hl-1">\</span><span class="hl-5">M3</span><br/><span class="hl-5">P4</span><br/><span class="hl-5">P5</span><br/><span class="hl-1">\</span><span class="hl-5">M6</span><br/><span class="hl-1">\</span><span class="hl-5">M7</span><br/><span class="hl-5">P8</span><br/><br/><span class="hl-0">311</span><span class="hl-1">@</span>
+</code><button>Copy</button></pre>
+<a id="md:issues-with-the-decimal-separator" class="tsd-anchor"></a><h2><a href="#md:issues-with-the-decimal-separator">Issues with the decimal separator</a></h2><p>To be backwards compatible with Scale Workshop versions 1 and 2, SonicWeave preserves the syntax for &quot;dot cents&quot; and &quot;comma decimals&quot;.</p>
+<p>Both of these are problematic for the language grammar.</p>
+<a id="md:dot-cents" class="tsd-anchor"></a><h3><a href="#md:dot-cents">Dot cents</a></h3><p>Compare the expressions <code>100.0</code> and <code>100.0 Hz</code>. The first one indicates one hundred cents and the second one is interpreted as one hundred hertz due to a special grammar rule.</p>
+<p>To force the cents interpretation we can use parenthesis <code>(100.0) Hz</code> and produce an error because the domains and echelons are incompatible. This is just to say that the special grammar rule doesn&#39;t hide anything sensible.</p>
+<a id="md:comma-decimals" class="tsd-anchor"></a><h3><a href="#md:comma-decimals">Comma decimals</a></h3><p>The expression <code>1,2</code> for <code>6/5</code> is problematic when you consider the rest of the grammar. Would <code>[1,2,3,4]</code> be the same as <code>[6/5, 17/5]</code> or <code>[1, 2, 3, 4]</code>? SonicWeave takes the latter interpretation and bans comma decimals from most of the syntax.</p>
+<a id="md:recommendations" class="tsd-anchor"></a><h3><a href="#md:recommendations">Recommendations</a></h3><p>To avoid ambiguity use explicit cents i.e. <code>100.0c</code> or explicit scientific notation i.e. <code>1.2e0</code> or just <code>1.2e</code>.</p>
+<a id="md:stdlib" class="tsd-anchor"></a><h2><a href="#md:stdlib">Stdlib</a></h2><p>SonicWeave comes with batteries included.</p>
+<a id="md:constants" class="tsd-anchor"></a><h3><a href="#md:constants">Constants</a></h3><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>E</code></td>
+<td><code>2.718281828459045r</code></td>
+<td>Base of natural logarithm</td>
+</tr>
+<tr>
+<td><code>PI</code></td>
+<td><code>3.141592653589793r</code></td>
+<td>Ratio of a circle&#39;s circumference to its diameter</td>
+</tr>
+<tr>
+<td><code>TAU</code></td>
+<td><code>6.283185307179586r</code></td>
+<td>The <a href="https://tauday.com/tau-manifesto">superior circle constant</a></td>
+</tr>
+</tbody></table>
+<a id="md:built-in-functions" class="tsd-anchor"></a><h3><a href="#md:built-in-functions">Built-in functions</a></h3><p>See <a href="https://github.com/xenharmonic-devs/sonic-weave/blob/main/BUILTIN.md#built-in-functions">BUILTIN.md</a>.</p>
+<a id="md:prelude-functions" class="tsd-anchor"></a><h3><a href="#md:prelude-functions">Prelude functions</a></h3><p>See <a href="https://github.com/xenharmonic-devs/sonic-weave/blob/main/BUILTIN.md#prelude-functions">BUILTIN.md</a>.</p>
+<a id="md:odds-and-ends" class="tsd-anchor"></a><h2><a href="#md:odds-and-ends">Odds and ends</a></h2><p>Most of these features were implemented for their own sake.</p>
+<a id="md:fractional-just-intonation-subgroups" class="tsd-anchor"></a><h3><a href="#md:fractional-just-intonation-subgroups">Fractional Just Intonation Subgroups</a></h3><p>By default monzos are vectors of prime exponents and vals are maps of primes, but sometimes you may wish to use other rational numbers as the basis.</p>
+<p>Let&#39;s take a look at <a href="https://en.xen.wiki/w/The_Archipelago#Barbados">Barbados temperament</a>. We can treat <code>13/5</code> like a prime alongside <code>2</code> and <code>3</code> and map it to <code>7\5</code>. The syntax is <code>5@2.3.13/5</code> or <code>&lt;5 8 7]@2.3.13/5</code>. Now <code>15/13 dot &lt;5 8 7]@2.3.13/5</code> evaluates to 1 step, exactly half of the 2 steps that an approximate <code>4/3</code> spans, as desired.</p>
+<p>An explicit subgroup may be given with monzos as well e.g. <code>[0 1 -1&gt;@2.3.13/5</code> for <code>logarithmic(15/13)</code>.</p>
+<a id="md:extended-pythagorean-notation" class="tsd-anchor"></a><h3><a href="#md:extended-pythagorean-notation">Extended Pythagorean notation</a></h3><p>The Pythagorean notation can be extended in many ways.</p>
+<a id="md:neutral-pythagorean" class="tsd-anchor"></a><h4><a href="#md:neutral-pythagorean">Neutral Pythagorean</a></h4><p>Ordinal notation* hides the fact that the perfect fifth spans four steps. This means that it can be divided into two thirds without issue. Usually these are the minor and major thirds but we can introduce a neutral third between them that divides the fifth exactly: <code>n3</code> is exactly <code>P5 % 2</code> or <code>sqrt(3/2)</code> if expressed linearly.</p>
+<p>*) <code>P1 + P1</code> evaluates to <code>P1</code> while <code>1 + 1</code> evaluates to <code>2</code>.</p>
+<p>Notable neutral intervals include:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Logarithmic</th>
+<th>Linear</th>
+<th>Size in cents</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Neutral third</td>
+<td><code>n3</code>, <code>P5 % 2</code></td>
+<td><code>sqrt(3/2)</code></td>
+<td><code>350.978</code></td>
+</tr>
+<tr>
+<td>Neutral sixth</td>
+<td><code>n6</code>, <code>P11 % 2</code></td>
+<td><code>sqrt(8/3)</code></td>
+<td><code>849.022</code></td>
+</tr>
+<tr>
+<td>Neutral seventh</td>
+<td><code>n7</code>, <code>P5 * 3/2</code></td>
+<td><code>sqrt(27/8)</code></td>
+<td><code>1052.933</code></td>
+</tr>
+</tbody></table>
+<p>The major intervals are one semiaugmented unison (or <code>56.843</code>) above from their neutral center e.g. <code>M3</code> is <code>n3 + sa1</code> while minor intervals are semidiminished w.r.t. neutral e.g. <code>m3</code> is <code>n3 + sd1</code>. A semiaugmented non-perfectable interval is semiaugmented w.r.t to major e.g. <code>sa6</code> is <code>M6 + sa1</code> while semidiminished starts from minor e.g. <code>sd7</code> is <code>m7 + sd1</code>.</p>
+<p>Perfect intervals are already at the center of their augmented and diminished variants so e.g. <code>sa4</code> is simply <code>P4 + sa1</code> or <code>32/27^3/2</code> if expressed linearly.</p>
+<a id="md:semisharps-and-semiflats" class="tsd-anchor"></a><h4><a href="#md:semisharps-and-semiflats">Semisharps and semiflats</a></h4><p>The accidental associated with <code>sa1</code> is the semisharp (<code>s#</code>, <code>½♯</code>, <code>𝄲</code>, <code>‡</code> or plain ASCII <code>t</code>) while the accidental corresponding to <code>sd1</code> is the semiflat (<code>sb</code>, <code>½♭</code>, <code>𝄳</code> or plain ASCII <code>d</code>). (The unicode <code>𝄲</code> tries to be clever by combining <code>4</code> with the sharp sign to say &quot;one quarter-tone sharp&quot;.)</p>
+<p>For example the neutral third above <code>C4</code> is <code>Ed4</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Accidental</th>
+<th>Monzo</th>
+<th>Size in cents</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>s#</code>, <code>½#</code>, <code>s♯</code>, <code>½♯</code>, <code>𝄲</code>, <code>‡</code>, <code>t</code></td>
+<td><code>[-11/2 7/2&gt;</code></td>
+<td><code>+56.843</code></td>
+</tr>
+<tr>
+<td><code>sb</code>, <code>½b</code> <code>s♭</code>, <code>½♭</code>, <code>𝄳</code>, <code>d</code></td>
+<td><code>[11/2 -7/2&gt;</code></td>
+<td><code>-56.843</code></td>
+</tr>
+</tbody></table>
+<a id="md:neutral-fjs" class="tsd-anchor"></a><h4><a href="#md:neutral-fjs">Neutral FJS</a></h4><p><a href="https://en.xen.wiki/w/User:M-yac/Neutral_Intervals_and_the_FJS">NFJS</a> notation for just intonation originally applied to neutral sounding primes such as 11, 13, 29, 31 etc. In SonicWeave you must be explicit about the comma set you wish to use in order to spell <code>11/9</code> as <code>n3^11n</code> or <code>27/22</code> as <code>n3_11n</code>.</p>
+<p>The first few NFJS commas are. To bridge from irrational to rational the commas must be irrational themselves.</p>
+<table>
+<thead>
+<tr>
+<th>Prime</th>
+<th>Comma</th>
+<th>Monzo</th>
+<th>Size in cents</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>11n</code></td>
+<td><code>sqrt(242/243)</code></td>
+<td><code>[1/2 -5/2 0 0 1&gt;</code></td>
+<td><code>-3.570</code></td>
+</tr>
+<tr>
+<td><code>13n</code></td>
+<td><code>sqrt(507/512)</code></td>
+<td><code>[-9/2 1/2 0 0 0 1&gt;</code></td>
+<td><code>-8.495</code></td>
+</tr>
+<tr>
+<td><code>29n</code></td>
+<td><code>sqrt(864/841)</code></td>
+<td><code>[-5/2 -3/2 0 0 0 0 0 0 0 1&gt;</code></td>
+<td><code>-23.355</code></td>
+</tr>
+<tr>
+<td><code>31n</code></td>
+<td><code>sqrt(2101707/2097152)</code></td>
+<td><code>[-21/2 7/2 0 0 0 0 0 0 0 0 1&gt;</code></td>
+<td><code>+1.878</code></td>
+</tr>
+<tr>
+<td><code>37n</code></td>
+<td><code>sqrt(175232/177147)</code></td>
+<td><code>[7/2 -11/2 0 0 0 0 0 0 0 0 0 1&gt;</code></td>
+<td><code>-9.408</code></td>
+</tr>
+</tbody></table>
+<p>In addition to NFJS commas SonicWeave has a neutral bridging comma associated with every prime.</p>
+<table>
+<thead>
+<tr>
+<th>Prime</th>
+<th>Comma</th>
+<th>Monzo</th>
+<th>Size in cents</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>5n</code></td>
+<td><code>sqrt(25/24)</code></td>
+<td><code>[-3/2 -1/2 1&gt;</code></td>
+<td><code>+35.336</code></td>
+</tr>
+<tr>
+<td><code>7n</code></td>
+<td><code>sqrt(54/49)</code></td>
+<td><code>[-1/2 -3/2 0 1&gt;</code></td>
+<td><code>-84.107</code></td>
+</tr>
+<tr>
+<td><code>17n</code></td>
+<td><code>sqrt(8192/7803)</code></td>
+<td><code>[-13/2 3/2 0 0 0 0 1&gt;</code></td>
+<td><code>-42.112</code></td>
+</tr>
+<tr>
+<td><code>19n</code></td>
+<td><code>sqrt(384/361)</code></td>
+<td><code>[-7/2 -1/2 0 0 0 0 0 1&gt;</code></td>
+<td><code>-53.464</code></td>
+</tr>
+<tr>
+<td><code>23n</code></td>
+<td><code>sqrt(529/486)</code></td>
+<td><code>[-1/2 -5/2 0 0 0 0 0 0 1&gt;</code></td>
+<td><code>73.387</code></td>
+</tr>
+</tbody></table>
+<p>Some of these can be handy for using neutral intervals as the center of just major and minor intervals e.g. <code>n3^5n</code> corresponds to <code>5/4</code> while <code>n3_5n</code> corresponds to <code>6/5</code>. See <a href="https://github.com/xenharmonic-devs/sonic-weave/blob/main/COMMAS.md#lumis-irrational-bridges">COMMAS.md</a> to learn more.</p>
+<a id="md:quarter-augmented-pythagorean-notation" class="tsd-anchor"></a><h4><a href="#md:quarter-augmented-pythagorean-notation">Quarter-augmented Pythagorean notation</a></h4><p>As mentioned above the fifth spans 4 degrees so we can split it again without breaking the ordinal notation.</p>
+<p>It does require an intermediary quality between major and neutral called <em>semimajor</em> and correspondingly between neutral and minor called <em>semiminor</em>.</p>
+<p>The quarter fifth <code>P5 % 4</code> is a semimajor second <code>sM2</code> (or <code>½M2</code>).</p>
+<p>The new augmented qualities are quarter-augmented (<code>qa</code>, <code>¼A</code>) and quarter-diminished (<code>qd</code>, <code>¼d</code>). Quarter-augmented plus semiaugmented is sesqui-semiaugmented (<code>Qa</code>, <code>¾A</code>) and correspondingly sesqui-semidiminished (<code>Qd</code>, <code>¾d</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Accidental</th>
+<th>Monzo</th>
+<th>Size in cents</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>q#</code>, <code>¼#</code>, <code>q♯</code>, <code>¼♯</code></td>
+<td><code>[-11/4 7/4&gt;</code></td>
+<td><code>+28.421</code></td>
+</tr>
+<tr>
+<td><code>qb</code>, <code>¼b</code>, <code>q♭</code>, <code>¼♭</code></td>
+<td><code>[11/4 -7/4&gt;</code></td>
+<td><code>-28.421</code></td>
+</tr>
+<tr>
+<td><code>Q#</code>, <code>¾#</code>, <code>Q♯</code>, <code>¾♯</code></td>
+<td><code>[-33/4 21/4&gt;</code></td>
+<td><code>+85.264</code></td>
+</tr>
+<tr>
+<td><code>Qb</code>, <code>¾b</code>, <code>Q♭</code>, <code>¾♭</code></td>
+<td><code>[33/4 -21/4&gt;</code></td>
+<td><code>-85.264</code></td>
+</tr>
+</tbody></table>
+<a id="md:mids" class="tsd-anchor"></a><h4><a href="#md:mids">Mids</a></h4><p><a href="https://en.xen.wiki/w/Ups_and_downs_notation">Ups and downs notation</a> comes with a mid (~) quality that doesn&#39;t always fall in between augmented and diminished. These exceptions are as follows:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Literal</th>
+<th>Recommended name</th>
+<th>Literal</th>
+<th>Monzo</th>
+<th>Size in cents</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Neutral fourth</td>
+<td><code>n4</code></td>
+<td>Semiaugmented fourth</td>
+<td><code>sa4</code></td>
+<td><code>[-7/2 5/2&gt;</code></td>
+<td><code>554.888</code></td>
+</tr>
+<tr>
+<td>Neutral fifth</td>
+<td><code>n5</code></td>
+<td>Semidiminished fifth</td>
+<td><code>sd5</code></td>
+<td><code>[9/2 -5/2&gt;</code></td>
+<td><code>645.112</code></td>
+</tr>
+</tbody></table>
+<p>They are octave complements of each other: <code>n4</code> is <code>P8 - n5</code>.</p>
+<a id="md:true-tone-splitters" class="tsd-anchor"></a><h3><a href="#md:true-tone-splitters">True tone-splitters</a></h3><p>Technically the term <em>semitone</em> is a misnomer because the diatonic semitone <code>m2</code> doesn&#39;t split the tone <code>M2</code> in half with mathematical precission (and neither does the chromatic semitone <code>a1</code>). The true semiwholetone <code>M2 % 2</code> is notated using interordinals as <code>n1.5</code> (or <code>n1½</code>).</p>
+<p>The difference <code>n1.5 - m2</code> is only <code>11.730c</code> so true tone-splitters are not very useful in their untempered form, but they do provide the notation <code>n4.5</code> for the semioctave <code>P8 % 2</code> which is stable in all even equal divisions of the octave.</p>
+<p>The basic tone-splitters are as follows:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Logarithmic</th>
+<th>Linear</th>
+<th>Size in cents</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Neutral sesquith</td>
+<td><code>n1.5</code>, <code>M2 % 2</code></td>
+<td><code>sqrt(9/8)</code></td>
+<td><code>101.955</code></td>
+</tr>
+<tr>
+<td>Neutral second-and-a-halfth</td>
+<td><code>n2.5</code>, <code>M2 * 3/2</code></td>
+<td><code>sqrt(729/512)</code></td>
+<td><code>305.865</code></td>
+</tr>
+<tr>
+<td>Neutral third-and-a-halfth</td>
+<td><code>n3.5</code>, <code>M2 * 5/2</code></td>
+<td><code>9/8 ^ 5/2</code></td>
+<td><code>509.775</code></td>
+</tr>
+<tr>
+<td>Neutral fourth-and-a-halfth</td>
+<td><code>n4.5</code>, <code>P8 % 2</code></td>
+<td><code>sqrt(2)</code></td>
+<td><code>600.000</code></td>
+</tr>
+<tr>
+<td>Neutral fifth-and-a-halfth</td>
+<td><code>n5.5</code>, <code>M10 % 2</code></td>
+<td><code>sqrt(81/32)</code></td>
+<td><code>803.910</code></td>
+</tr>
+<tr>
+<td>Neutral sixth-and-a-halfth</td>
+<td><code>n6.5</code>, <code>a12 % 2</code></td>
+<td><code>sqrt(6561/2048)</code></td>
+<td><code>1007.82</code></td>
+</tr>
+<tr>
+<td>Neutral seventh-and-a-halfth</td>
+<td><code>n7.5</code>, <code>m14 % 2</code></td>
+<td><code>sqrt(32/9)</code></td>
+<td><code>1098.045</code></td>
+</tr>
+</tbody></table>
+<a id="md:absolute-semioctave-dodecanominal-notation" class="tsd-anchor"></a><h3><a href="#md:absolute-semioctave-dodecanominal-notation">Absolute semioctave dodecanominal notation</a></h3><p>When stacked against the semioctave the fifth spans a dodecatonal scale inside the octave (10L 2s &quot;soft-jaric&quot; a.k.a. &quot;jaramechromic&quot;).</p>
+<p>The scale is nominated such that the Greek nominals form the Ionian mode starting from the semioctave.</p>
+<table>
+<thead>
+<tr>
+<th>Nominal</th>
+<th>ASCII</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>C4</code></td>
+<td></td>
+<td><code>C4 + P1</code></td>
+</tr>
+<tr>
+<td><code>γ4</code></td>
+<td><code>gamma4</code></td>
+<td><code>C4 + n1½</code></td>
+</tr>
+<tr>
+<td><code>D4</code></td>
+<td></td>
+<td><code>C4 + M2</code></td>
+</tr>
+<tr>
+<td><code>δ4</code></td>
+<td><code>delta4</code></td>
+<td><code>C4 + n2½</code></td>
+</tr>
+<tr>
+<td><code>E4</code></td>
+<td></td>
+<td><code>C4 + M3</code></td>
+</tr>
+<tr>
+<td><code>F4</code></td>
+<td></td>
+<td><code>C4 + P4</code></td>
+</tr>
+<tr>
+<td><code>ζ4</code></td>
+<td><code>zeta4</code></td>
+<td><code>C4 + n4½</code></td>
+</tr>
+<tr>
+<td><code>G4</code></td>
+<td></td>
+<td><code>C4 + P5</code></td>
+</tr>
+<tr>
+<td><code>η4</code></td>
+<td><code>eta4</code></td>
+<td><code>C4 + n5½</code></td>
+</tr>
+<tr>
+<td><code>a4</code></td>
+<td></td>
+<td><code>C4 + M6</code></td>
+</tr>
+<tr>
+<td><code>α4</code></td>
+<td><code>alpha4</code></td>
+<td><code>C4 + n6½</code></td>
+</tr>
+<tr>
+<td><code>β4</code></td>
+<td><code>beta4</code></td>
+<td><code>C4 + n7½</code></td>
+</tr>
+<tr>
+<td><code>C5</code></td>
+<td></td>
+<td><code>C4 + P8</code></td>
+</tr>
+</tbody></table>
+<p>Notice how the notation is half-way antisymmteric w.r.t. Latin and Greek nominals and how <code>B4</code> is missing. The final Greek nominal <code>ε4</code> (<code>epsilon4</code>) equal to <code>C4 + n3½</code> is also left out, but defined to complete the Ionian mode. Some temperaments stretch the scale to make room for both so e.g. 14-tone equal temperament can be fully notated with alternating Latin and Greek nominals.</p>
+<p>The accidentals associated with this bihexatonic scale are <code>r</code> and <code>p</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Accidental</th>
+<th>Monzo</th>
+<th>Size in cents</th>
+<th>Mnemonics</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>r</code></td>
+<td><code>[-19/2 6&gt;</code></td>
+<td><code>+11.730</code></td>
+<td><strong>r</strong><em>aise</em>, <em>paja</em><strong>r</strong><em>a</em></td>
+</tr>
+<tr>
+<td><code>p</code></td>
+<td><code>[19/2 -6&gt;</code></td>
+<td><code>-11.730</code></td>
+<td>(flipped <code>b</code>), <strong>p</strong><em>ajara</em></td>
+</tr>
+</tbody></table>
+<p>Tone-splitter and decanominals are associated with the <code>t</code> flavor of commas e.g. <code>17/12</code> may be spelled <code>ζ4^17t</code> (assuming <code>C4 = 1/1</code>).</p>
+<a id="md:the-interordinal-semifourth" class="tsd-anchor"></a><h3><a href="#md:the-interordinal-semifourth">The interordinal semifourth</a></h3><p>When combined with neutral inflections the true tone-splitters induce the notation <code>m2.5</code> for the semifourth <code>P4 % 2</code> basically for free.</p>
+<p>Notable semiquartal intervals include:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Logarithmic</th>
+<th>Linear</th>
+<th>Size in cents</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Minor second-and-a-halfth</td>
+<td><code>m2½</code>, <code>P4 % 2</code></td>
+<td><code>sqrt(4/3)</code></td>
+<td><code>249.022</code></td>
+</tr>
+<tr>
+<td>Minor third-and-a-halfth</td>
+<td><code>m3½</code>, <code>M6 % 2</code></td>
+<td><code>sqrt(27/16)</code></td>
+<td><code>452.933</code></td>
+</tr>
+<tr>
+<td>Minor fifth-and-a-halfth</td>
+<td><code>m5½</code>, <code>P4 * 3/2</code></td>
+<td><code>sqrt(64/27) </code></td>
+<td><code>747.067</code></td>
+</tr>
+<tr>
+<td>Minor sixth-and-a-halfth</td>
+<td><code>m6½</code>, <code>P12 % 2</code></td>
+<td><code>sqrt(3)</code></td>
+<td><code>950.978</code></td>
+</tr>
+<tr>
+<td>Major seventh-and-a-halfth</td>
+<td><code>M7½</code>, <code>M14 % 2</code></td>
+<td><code>sqrt(243/64)</code></td>
+<td><code>1154.888</code></td>
+</tr>
+</tbody></table>
+<a id="md:absolute-semifourth-pentanominal-notation" class="tsd-anchor"></a><h3><a href="#md:absolute-semifourth-pentanominal-notation">Absolute semifourth pentanominal notation</a></h3><p>The split fourth spans a pentatonic (4L 1s &quot;manual&quot;) scale:</p>
+<pre><code class="language-javascript"><span class="hl-5">C4</span><span class="hl-1"> = </span><span class="hl-7">mtof</span><span class="hl-1">(</span><span class="hl-0">60</span><span class="hl-1">)</span><br/><span class="hl-2">φ4</span><br/><span class="hl-5">F4</span><br/><span class="hl-5">G4</span><br/><span class="hl-2">ψ4</span><br/><span class="hl-5">C5</span>
+</code><button>Copy</button></pre>
+<p>As with semioctave nominals <code>φ</code> can be spelled in ASCII as <code>phi</code> and <code>ψ</code> as <code>psi</code>. <em>Phi</em> was chosen due to similarity to <em>F</em> and <em>psi</em> comes from the full enneatonic (5L 4s &quot;semiquartal&quot;) scale:</p>
+<pre><code class="language-javascript"><span class="hl-5">C4</span><span class="hl-1"> = </span><span class="hl-7">mtof</span><span class="hl-1">(</span><span class="hl-0">60</span><span class="hl-1">)</span><br/><span class="hl-5">D4</span><br/><span class="hl-2">φ4</span><br/><span class="hl-2">χ4</span><br/><span class="hl-5">F4</span><br/><span class="hl-5">G4</span><br/><span class="hl-2">a4</span><br/><span class="hl-2">ψ4</span><br/><span class="hl-2">ω4</span><br/><span class="hl-5">C5</span>
+</code><button>Copy</button></pre>
+<table>
+<thead>
+<tr>
+<th>Nominal</th>
+<th>ASCII</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>φ4</code></td>
+<td><code>phi4</code></td>
+<td><code>C4 + m2.5</code></td>
+</tr>
+<tr>
+<td><code>χ4</code></td>
+<td><code>chi4</code></td>
+<td><code>C4 + m3.5</code></td>
+</tr>
+<tr>
+<td><code>ψ4</code></td>
+<td><code>psi4</code></td>
+<td><code>C4 + m6.5</code></td>
+</tr>
+<tr>
+<td><code>ω4</code></td>
+<td><code>omega4</code></td>
+<td><code>C4 + M7.5</code></td>
+</tr>
+</tbody></table>
+<p>The accidentals are associated with the 4L 1s scale: <em>em</em> (<code>&amp;</code>) denotes the difference between a semifourth and a whole tone: <code>C&amp;4</code> is <code>C4 + (P4%2 - M2)</code>. The accidental <em>at</em> (<code>@</code>) is the opposite.</p>
+<p><code>χ</code> is equal to <code>F@</code> while <code>ω</code> is equal to <code>C@</code> of the next octave.</p>
+<p>Due to technical reasons the accidentals for the 5L 4s scale, <em>scarab</em> (<code>¤</code>) and <em>pound</em> (<code>£</code>), must also be defined despite their large size.</p>
+<table>
+<thead>
+<tr>
+<th>Accidental</th>
+<th>Monzo</th>
+<th>Size in cents</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>&amp;</code></td>
+<td><code>[4 -5/2&gt;</code></td>
+<td><code>+45.112</code></td>
+</tr>
+<tr>
+<td><code>@</code></td>
+<td><code>[-4 5/2&gt;</code></td>
+<td><code>-45.112</code></td>
+</tr>
+<tr>
+<td><code>¤</code></td>
+<td><code>[-7 9/2&gt;</code></td>
+<td><code>+158.798</code></td>
+</tr>
+<tr>
+<td><code>£</code></td>
+<td><code>[7 -9/2&gt;</code></td>
+<td><code>-158.798</code></td>
+</tr>
+</tbody></table>
+<p>Semiquartals are associated with the <code>q</code> comma flavor e.g. <code>7/6</code> can be spelled <code>φ4^7q</code> (assuming <code>C4 = 1/1</code>).</p>
+<a id="md:further-splits" class="tsd-anchor"></a><h3><a href="#md:further-splits">Further splits</a></h3><p>Vulgar fraction modifiers like <code>⅓</code> or <code>⅔</code> can be applied to augmented, major, minor and diminished interval qualities and the accidentals.</p>
+<p>You may encounter them when splitting Pythagorean intervals like the <em>third-major second</em> <code>⅓M2</code> resulting from splitting the fourth into three parts <code>P4 / 3</code>.</p>
+<p>You can even make interordinals like the <em>quarter-minor sesquith</em> <code>qm1.5</code> by splitting the fifth eight ways <code>P5 / 8</code>.</p>
+<p>Absolute notation works too <code>C4 + M6 / 5</code> happens to be <em>Dee fifth-flat four</em> <code>D⅕♭4</code>.</p>
+<a id="md:extra-comma-flavors" class="tsd-anchor"></a><h3><a href="#md:extra-comma-flavors">Extra comma flavors</a></h3><p>Extra commas include extended Helmholtz-Ellis inflections and additional bridges from above irrationals to just intonation.</p>
+<p>See <a href="https://github.com/xenharmonic-devs/sonic-weave/blob/main/COMMAS.md">COMMAS.md</a>.</p>
+<a id="md:non-standard-pitch-declaration" class="tsd-anchor"></a><h3><a href="#md:non-standard-pitch-declaration">Non-standard pitch declaration</a></h3><p>Pitch can be declared as a period of oscillation, but it&#39;s coearced to Hz to preserve the meaning of relative notation as ratios of frequencies.</p>
+<p>E.g. <code>C4 = 10ms</code> has the same effect as <code>C4 = 100 Hz</code>.</p>
+<a id="md:obscure-types" class="tsd-anchor"></a><h3><a href="#md:obscure-types">Obscure types</a></h3><table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Literal</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Second</td>
+<td><code>1s</code></td>
+<td>Inverse of <code>1Hz</code> i.e. <code>1s * 1Hz</code> evaluates to <code>1</code></td>
+</tr>
+<tr>
+<td>Jorp</td>
+<td><code>€</code></td>
+<td>Geometric inverse of <code>c</code> i.e. <code>€</code> is equal to <code>&lt;1200]</code></td>
+</tr>
+</tbody></table>
+<a id="md:obscure-operations" class="tsd-anchor"></a><h3><a href="#md:obscure-operations">Obscure operations</a></h3><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Linear</th>
+<th>Result</th>
+<th>Logarithmic</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Harmonic/lens addition</td>
+<td><code>3 /+ 5</code></td>
+<td><code>15/8</code></td>
+<td><em>N/A</em></td>
+<td></td>
+</tr>
+<tr>
+<td>Harmonic/lens addition</td>
+<td><code>3 ⊕ 5</code></td>
+<td><code>15/8</code></td>
+<td><em>N/A</em></td>
+<td></td>
+</tr>
+<tr>
+<td>Harmonic/lens subtraction</td>
+<td><code>3 /- 5</code></td>
+<td><code>15/2</code></td>
+<td><em>N/A</em></td>
+<td></td>
+</tr>
+<tr>
+<td>Harmonic/lens subtraction</td>
+<td><code>3 ⊖ 5</code></td>
+<td><code>15/2</code></td>
+<td><em>N/A</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>N/A</em></td>
+<td><em>N/A</em></td>
+<td><em>N/A</em></td>
+<td><code>P8 /+ P12</code></td>
+<td><code>1\2&lt;6&gt;</code></td>
+</tr>
+<tr>
+<td><em>N/A</em></td>
+<td><em>N/A</em></td>
+<td><em>N/A</em></td>
+<td><code>P12 /- P8</code></td>
+<td><code>1\2&lt;3/2&gt;</code></td>
+</tr>
+</tbody></table>
+<p>The <a href="https://en.wikipedia.org/wiki/Thin_lens">thin lens equation</a> f⁻¹ = u⁻¹ + v⁻¹ motivates the definition of <em>lens addition</em> f = u ⊕ v and the corresponding <em>lens subtraction</em> u = f ⊖ v.</p>
+<p>Although the real <em>raison d&#39;être</em> is to complete the <a href="https://www.youtube.com/watch?v=sULa9Lc4pck">Triangle of Power</a>:</p>
+<table>
+<thead>
+<tr>
+<th>Equation</th>
+<th>Name</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>x ^ y = z</code></td>
+<td>Exponentiation</td>
+</tr>
+<tr>
+<td><code>z /^ y = x</code></td>
+<td>Recipropower</td>
+</tr>
+<tr>
+<td><code>z /_ x = y</code></td>
+<td>Logdivision</td>
+</tr>
+<tr>
+<td><code>a ^ x * a ^ y = a ^ (x + y)</code></td>
+<td>Distribution of exponents</td>
+</tr>
+<tr>
+<td><code>(x * y) /_ a = x /_ a + y /_ a</code></td>
+<td>Distribution of logdividends</td>
+</tr>
+<tr>
+<td><code>x ^ a * y ^ a = (x * y) ^ a</code></td>
+<td>Factoring of bases I</td>
+</tr>
+<tr>
+<td><code>x /^ a * y /^ a = (x * y) /^ a</code></td>
+<td>Factoring of bases II</td>
+</tr>
+<tr>
+<td><code>a /_ (x * y) = a /_ x /+ a /_ y</code></td>
+<td>Lensing of logarithmands</td>
+</tr>
+<tr>
+<td><code>a /^ x * a /^ y = a /^ (x /+ y)</code></td>
+<td>Lensing of roots</td>
+</tr>
+</tbody></table>
+<a id="md:future-work" class="tsd-anchor"></a><h2><a href="#md:future-work">Future work</a></h2><p>The syntax could be extended to cover movement in time i.e. to become a full textual music notation vis-à-vis Xenpaper.</p>
+<a id="md:additional-resources" class="tsd-anchor"></a><h2><a href="#md:additional-resources">Additional resources</a></h2><ul>
+<li><a href="https://en.xen.wiki/">Xenharmonic Wiki</a></li>
+<li><a href="https://forum.sagittal.org/viewtopic.php?t=575">Rationale</a> behind the two flavors of anti-exponentiation <code>/^</code> and <code>/_</code>.</li>
+</ul>
+<a id="md:acknowledgments--inspiration" class="tsd-anchor"></a><h2><a href="#md:acknowledgments--inspiration">Acknowledgments / inspiration</a></h2><p>SonicWeave looks like Javascript with Python semantics, has Haskell ranges and operates similar to xen-calc.</p>
+<ul>
+<li>ECMAScript - Brendan Eich et. al.</li>
+<li>Python - Guido van Rossum et. al.</li>
+<li>Haskell - Lennart Augustsson et. al.</li>
+<li>Scala - Manuel Op de Coul</li>
+<li>Scale Workshop 1 - Sean Archibald et. al.</li>
+<li>FJS - &quot;misotanni&quot;</li>
+<li>NFJS - Matthew Yacavone</li>
+<li>Xen-calc - Matthew Yacavone</li>
+<li>Xenpaper - Damien Clarke</li>
+<li>Ups and downs notation - Kite Giedraitis</li>
+<li>Peg.js - David Majda et. al.</li>
+<li>Peggy - Joe Hildebrand et. al.</li>
+<li>Xenharmonic Wiki - (community project)</li>
+<li>Xenharmonic Alliance - (community Discord / Facebook)</li>
+</ul>
+</div></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-index-accordion"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="assets/icons.svg#icon-chevronDown"></use></svg>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><h4 class="uppercase">Member Visibility</h4><form><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-private" name="private"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Private</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></form></div><div class="tsd-theme-toggle"><h4 class="uppercase">Theme</h4><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-index-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="assets/icons.svg#icon-chevronDown"></use></svg>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#md:sonic-weave"><span>sonic-<wbr/>weave</span></a><ul><li><a href="#md:type-system"><span>Type system</span></a></li><li><ul><li><a href="#md:basic-interval-types"><span>Basic interval types</span></a></li><li><ul><li><a href="#md:numeric-separators"><span>Numeric separators</span></a></li></ul></li></ul></li><li><a href="#md:basic-operation"><span>Basic operation</span></a></li><li><ul><li><a href="#md:pushing"><span>Pushing</span></a></li><li><a href="#md:unrolling"><span>Unrolling</span></a></li><li><a href="#md:coloring"><span>Coloring</span></a></li><li><a href="#md:labeling"><span>Labeling</span></a></li></ul></li><li><a href="#md:operators"><span>Operators</span></a></li><li><ul><li><a href="#md:unary"><span>Unary</span></a></li><li><a href="#md:coalescing"><span>Coalescing</span></a></li><li><a href="#md:boolean"><span>Boolean</span></a></li><li><a href="#md:array"><span>Array</span></a></li><li><a href="#md:interval"><span>Interval</span></a></li><li><ul><li><a href="#md:universal-operators-and-preference"><span>Universal operators and preference</span></a></li></ul></li></ul></li><li><a href="#md:arrays"><span>Arrays</span></a></li><li><ul><li><a href="#md:literals"><span>Literals</span></a></li><li><a href="#md:ranges"><span>Ranges</span></a></li><li><a href="#md:harmonic-segments"><span>Harmonic segments</span></a></li><li><ul><li><a href="#md:subharmonic-segments"><span>Subharmonic segments</span></a></li></ul></li><li><a href="#md:enumerated-chords"><span>Enumerated chords</span></a></li><li><ul><li><a href="#md:reflected-enumerations"><span>Reflected enumerations</span></a></li></ul></li><li><a href="#md:array-access"><span>Array access</span></a></li><li><ul><li><a href="#md:nullish-access"><span>Nullish access</span></a></li><li><a href="#md:using-an-array-of-indices"><span>Using an array of indices</span></a></li><li><a href="#md:using-an-array-of-booleans"><span>Using an array of booleans</span></a></li></ul></li><li><a href="#md:slices"><span>Slices</span></a></li></ul></li><li><a href="#md:records"><span>Records</span></a></li><li><ul><li><a href="#md:record-access"><span>Record access</span></a></li></ul></li><li><a href="#md:metric-prefixes"><span>Metric prefixes</span></a></li><li><a href="#md:numeric-frequency-flavor"><span>Numeric frequency flavor</span></a></li><li><a href="#md:truth-values"><span>Truth values</span></a></li><li><a href="#md:comments"><span>Comments</span></a></li><li><a href="#md:pythagorean-notation"><span>Pythagorean notation</span></a></li><li><ul><li><a href="#md:absolute-notation"><span>Absolute notation</span></a></li><li><a href="#md:functional-just-system"><span>Functional <wbr/>Just <wbr/>System</span></a></li><li><a href="#md:s-expressions"><span>S-<wbr/>expressions</span></a></li></ul></li><li><a href="#md:interval-type-system"><span>Interval type system</span></a></li><li><ul><li><a href="#md:domains"><span>Domains</span></a></li><li><a href="#md:tiers"><span>Tiers</span></a></li><li><a href="#md:echelons"><span>Echelons</span></a></li></ul></li><li><a href="#md:variable-declaration"><span>Variable declaration</span></a></li><li><ul><li><a href="#md:re-assignment"><span>Re-<wbr/>assignment</span></a></li></ul></li><li><a href="#md:pitch-declaration"><span>Pitch declaration</span></a></li><li><a href="#md:blocks"><span>Blocks</span></a></li><li><ul><li><a href="#md:parent-scale"><span>Parent scale</span></a></li></ul></li><li><a href="#md:while"><span>While</span></a></li><li><a href="#md:forof"><span>For...of</span></a></li><li><a href="#md:forin"><span>For..in</span></a></li><li><a href="#md:break"><span>Break</span></a></li><li><a href="#md:continue"><span>Continue</span></a></li><li><a href="#md:whileelse-and-forofelse"><span>While..else and for..of..else</span></a></li><li><ul><li><a href="#md:array-comprehensions"><span>Array comprehensions</span></a></li><li><ul><li><a href="#md:if-clause"><span>If clause</span></a></li></ul></li><li><a href="#md:vector-operations"><span>Vector operations</span></a></li><li><a href="#md:array-broadcasting"><span>Array broadcasting</span></a></li></ul></li><li><a href="#md:ifelse"><span>If...else</span></a></li><li><ul><li><a href="#md:ternary-expressions"><span>Ternary expressions</span></a></li></ul></li><li><a href="#md:function-declaration"><span>Function declaration</span></a></li><li><ul><li><a href="#md:calling-functions"><span>Calling functions</span></a></li><li><a href="#md:lambda-expressions"><span>Lambda expressions</span></a></li></ul></li><li><a href="#md:throwing"><span>Throwing</span></a></li><li><a href="#md:exception-handling"><span>Exception handling</span></a></li><li><a href="#md:lest-expressions"><span>Lest expressions</span></a></li><li><a href="#md:implicit-mapping"><span>Implicit mapping</span></a></li><li><a href="#md:tempering"><span>Tempering</span></a></li><li><ul><li><a href="#md:implicit-tempering"><span>Implicit tempering</span></a></li><li><a href="#md:using-ups-and-downs"><span>Using ups and downs</span></a></li><li><a href="#md:tweaking-ups-and-downs"><span>Tweaking ups and downs</span></a></li></ul></li><li><a href="#md:issues-with-the-decimal-separator"><span>Issues with the decimal separator</span></a></li><li><ul><li><a href="#md:dot-cents"><span>Dot cents</span></a></li><li><a href="#md:comma-decimals"><span>Comma decimals</span></a></li><li><a href="#md:recommendations"><span>Recommendations</span></a></li></ul></li><li><a href="#md:stdlib"><span>Stdlib</span></a></li><li><ul><li><a href="#md:constants"><span>Constants</span></a></li><li><a href="#md:built-in-functions"><span>Built-<wbr/>in functions</span></a></li><li><a href="#md:prelude-functions"><span>Prelude functions</span></a></li></ul></li><li><a href="#md:odds-and-ends"><span>Odds and ends</span></a></li><li><ul><li><a href="#md:fractional-just-intonation-subgroups"><span>Fractional <wbr/>Just <wbr/>Intonation <wbr/>Subgroups</span></a></li><li><a href="#md:extended-pythagorean-notation"><span>Extended <wbr/>Pythagorean notation</span></a></li><li><ul><li><a href="#md:neutral-pythagorean"><span>Neutral <wbr/>Pythagorean</span></a></li><li><a href="#md:semisharps-and-semiflats"><span>Semisharps and semiflats</span></a></li><li><a href="#md:neutral-fjs"><span>Neutral FJS</span></a></li><li><a href="#md:quarter-augmented-pythagorean-notation"><span>Quarter-<wbr/>augmented <wbr/>Pythagorean notation</span></a></li><li><a href="#md:mids"><span>Mids</span></a></li></ul></li><li><a href="#md:true-tone-splitters"><span>True tone-<wbr/>splitters</span></a></li><li><a href="#md:absolute-semioctave-dodecanominal-notation"><span>Absolute semioctave dodecanominal notation</span></a></li><li><a href="#md:the-interordinal-semifourth"><span>The interordinal semifourth</span></a></li><li><a href="#md:absolute-semifourth-pentanominal-notation"><span>Absolute semifourth pentanominal notation</span></a></li><li><a href="#md:further-splits"><span>Further splits</span></a></li><li><a href="#md:extra-comma-flavors"><span>Extra comma flavors</span></a></li><li><a href="#md:non-standard-pitch-declaration"><span>Non-<wbr/>standard pitch declaration</span></a></li><li><a href="#md:obscure-types"><span>Obscure types</span></a></li><li><a href="#md:obscure-operations"><span>Obscure operations</span></a></li></ul></li><li><a href="#md:future-work"><span>Future work</span></a></li><li><a href="#md:additional-resources"><span>Additional resources</span></a></li><li><a href="#md:acknowledgments--inspiration"><span>Acknowledgments / inspiration</span></a></li></ul></div></details></div><div class="site-menu"><nav class="tsd-navigation"><a href="modules.html" class="current"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="assets/icons.svg#icon-1"></use></svg><span>sonic-weave</span></a><ul class="tsd-small-nested-navigation" id="tsd-nav-container" data-base="."><li>Loading...</li></ul></nav></div></div></div><div class="tsd-generator"><p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div><div class="overlay"></div></body></html>
